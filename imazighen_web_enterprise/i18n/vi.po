@@ -1,0 +1,353 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* imazighen_web_enterprise
+# 
+# Translators:
+# Martin Trigaux, 2019
+# fanha99 <fanha99@hotmail.com>, 2019
+# Nancy Momoland <thanhnguyen.icsc@gmail.com>, 2019
+# Thang Duong Bao <nothingctrl@gmail.com>, 2019
+# Dung Nguyen Thi <dungnt@trobz.com>, 2019
+# Dao Nguyen <trucdao.uel@gmail.com>, 2019
+# Duy BQ <duybq86@gmail.com>, 2019
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-09 11:59+0000\n"
+"PO-Revision-Date: 2019-08-26 09:38+0000\n"
+"Last-Translator: Duy BQ <duybq86@gmail.com>, 2019\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "(Enterprise Edition)"
+msgstr "Phiên bản Doanh Nghiệp"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "1 month"
+msgstr "1 tháng"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "Action"
+msgstr "Hành động"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Alt"
+msgstr "Alt"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Applications"
+msgstr "Ứng viên"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "COMPANIES"
+msgstr "CÔNG TY"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/js/views/view_dialogs.js:0
+#, python-format
+msgid "Clear"
+msgstr "Làm sạch"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "Close menu"
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "Company menu"
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Control"
+msgstr "Điều khiển"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Database expiration:"
+msgstr "Ngày hết hạn Cơ sở dữ liệu:"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "Filters..."
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#: model:ir.model,name:imazighen_web_enterprise.model_ir_http
+msgid "HTTP Routing"
+msgstr "HTTP Routing"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Log in as an administrator to correct the issue."
+msgstr "Đăng nhập với tài khoản quản trị để sửa vấn đề này"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Logo"
+msgstr "Biểu tượng"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "Menu"
+msgstr "Trình đơn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "No result"
+msgstr "Không kết quả"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Odoo"
+msgstr "Hệ thống Odoo"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Odoo Help"
+msgstr "Trợ giúp hệ thống"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Paste code here"
+msgstr "Dán mã vào đây"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/js/views/relational_fields.js:0
+#, python-format
+msgid "Quick search: %s"
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Refresh subscription status"
+msgstr "Làm mới trạng thái đăng ký"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Register"
+msgstr "Đăng ký"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Register your subscription"
+msgstr "Đăng ký thuê bao của bạn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/js/views/view_dialogs.js:0
+#, python-format
+msgid "Remove"
+msgstr "Gỡ"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Renew your subscription"
+msgstr "Làm mới thuê bao của bạn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Search..."
+msgstr "Tìm..."
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base_mobile.xml:0
+#, python-format
+msgid "See result"
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid ""
+"Something went wrong while registering your database. You can try again or "
+"contact"
+msgstr ""
+"Đã xảy ra lỗi khi đăng ký cơ sở dữ liệu của bạn. Bạn có thể thử lại hoặc "
+"liên hệ"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Subscription Code:"
+msgstr "Mã thuê bao:"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid ""
+"Thank you, your registration was successful! Your database is valid until"
+msgstr ""
+"Xin cảm ơn, bạn đã đăng ký thành công! Cơ sở dữ liệu của bạn có hiệu lực đến"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "This database has expired."
+msgstr "Cơ sở dữ liệu này đã hết hạn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "This database will expire in"
+msgstr "Cơ sở dữ liệu này sẽ hết hạn trong"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "This demo database will expire in"
+msgstr "Cơ sở dữ liệu demo này sẽ hết hạn trong"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Toggle home menu"
+msgstr "Chuyển sang menu chính"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Toggle menu"
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Upgrade your subscription"
+msgstr "Nâng cấp thuê bao của bạn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid ""
+"You have more users or more apps installed than your subscription allows."
+msgstr ""
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid ""
+"You will be able to register your database once you have installed your "
+"first app."
+msgstr ""
+"Bạn có thể đăng ký cơ sở dữ liệu của bạn một khi bạn đã cài đặt ứng dụng đầu"
+" tiên của bạn."
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Your subscription code"
+msgstr "Mã thuê bao của bạn"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "Your subscription was updated and is valid until"
+msgstr "Thuê bao của bạn đã cập nhật và có giá trị đến"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "buy a subscription"
+msgstr "mua một thuê bao"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "days"
+msgstr "ngày"
+
+#. module: imazighen_web_enterprise
+#. openerp-web
+#: code:addons/imazighen_web_enterprise/static/src/xml/base.xml:0
+#, python-format
+msgid "or"
+msgstr "hoặc"
