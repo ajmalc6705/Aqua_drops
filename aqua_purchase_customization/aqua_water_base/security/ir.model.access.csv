@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_aqua_customer_coupon,access_aqua_customer_coupon,model_aqua_customer_coupon,base.group_user,1,1,1,1
-access_aqua_customer_coupon_lines,access_aqua_customer_coupon_lines,model_aqua_customer_coupon_lines,base.group_user,1,1,1,1
-
