@@ -1,0 +1,156 @@
+<odoo>
+	<data>
+		<record id="aqua_po_account_move_form_view" model="ir.ui.view">
+            <field name="name">aqua.account.move.form.view</field>
+            <field name="model">account.move</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+            	<form create="0" edit="0" delete="0" duplicate="0">
+            		<header>
+                        <button name="action_register_payment" id="account_invoice_payment_btn"
+                                type="object" class="oe_highlight" string="Register Payment"
+                                attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('payment_state', 'not in', ('not_paid', 'partial')), ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"
+                                />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted,cancel" readonly="1"/>
+            		</header>
+            		<sheet>
+						<field name="move_type" />
+            			<div class="oe_title">
+		            		<label for="name" class="oe_edit_only"/>
+		                    <h1>
+		                    	<field name="name" required="1"/>
+		                    </h1>
+	                    </div>
+	                    <group>
+	                        <group>
+	                      		<field name="partner_id" required="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+	                      		<field name="ref"/>
+	                      		<field name="company_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+	                        </group>
+	                        <group>
+	                      		<field name="invoice_date" required="1"/>
+	                      		<field name="date" required="1"/>
+	                        </group>
+	                    </group>
+	                    <field name="id" invisible="1"/>
+                        <field name="is_aqua_bill" invisible="1"/>
+                        <field name="payment_state" invisible="1"/>
+	                    <notebook>
+		                    <page string="Invoice Line">
+                                <field name="invoice_line_ids" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="sequence"/>
+                                        <field name="move_name" invisible="1"/>
+                                        <field name="product_id" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="account_id" invisible="1"/>
+                                        <field name="analytic_account_id" invisible="1"/>
+                                        <field name="analytic_tag_ids" invisible="1"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="product_uom_id" string="UoM" />
+                                        <field name="price_unit" string="Price"/>
+                                        <field name="discount" string="Disc.%"/>
+                                        <field name="tax_ids" widget="many2many_tags"/>
+                                        <field name="price_subtotal" string="Subtotal"/>
+                                        <field name="price_total" string="Total"/>
+
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="amount_currency" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="debit" invisible="1"/>
+                                        <field name="credit" invisible="1"/>
+                                        <field name="date" invisible="1"/>
+                                        <field name="date_maturity" invisible="1"/>
+
+                                        <field name="group_tax_id" invisible="1"/>
+                                        <field name="tax_line_id" invisible="1"/>
+                                        <field name="tax_repartition_line_id" invisible="1"/>
+                                        <field name="tax_tag_ids" invisible="1"/>
+                                        <field name="tax_base_amount" invisible="1"/>
+                                        <field name="company_id" invisible="1"/>
+                                        <field name="company_currency_id" invisible="1"/>
+                                        <field name="recompute_tax_line" invisible="1" force_save="1"/>
+                                        <field name="display_type" force_save="1" invisible="1"/>
+                                        <field name="is_rounding_line" invisible="1"/>
+                                        <field name="exclude_from_invoice_tab" invisible="1"/>
+                                        <field name="account_internal_type" invisible="1"/>
+                                        <field name="account_internal_group" invisible="1"/>
+                                    </tree>
+                                    <form>
+									</form>
+                                 </field>
+                                    <group colspan="4">
+                                        <group class="oe_subtotal_footer oe_right">
+
+                                            <field name="tax_totals_json" widget="account-tax-totals-field" nolabel="1" colspan="2"/>
+
+                                            <field name="invoice_payments_widget" colspan="2" nolabel="1" widget="payment"/>
+                                            <field name="amount_residual" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                                        </group>
+                                        <field name="invoice_outstanding_credits_debits_widget"
+                                            class="oe_invoice_outstanding_credits_debits"
+                                            colspan="2" nolabel="1" widget="payment"
+                                            attrs="{'invisible': ['|', ('state', '!=', 'posted'), ('move_type', 'in', ('out_receipt', 'in_receipt'))]}"/>
+                                    </group>
+                                 
+		                    </page>
+	                    </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                  		<field name="activity_ids" widget="mail_activity"/>
+                  		<field name="message_ids" widget="mail_thread"/>
+              		</div>
+                    
+            	</form>
+            </field>
+        </record>
+        
+        
+        <record id="aqua_po_account_move_tree_view" model="ir.ui.view">
+            <field name="name">aqua.account.move.tree.view</field>
+            <field name="model">account.move</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <tree create="0" edit="0" delete="0" duplicate="0">
+	                <field name="name"/>
+	          		<field name="ref"/>
+<!--              		<field name="tax_totals_json"/>
+	          		<field name="partner_id"/>
+	          		<field name="ref"/>
+              		<field name="invoice_date"/>
+              		<field name="date"/>
+              		<field name="tax_totals_json"/>
+-->                </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="aqua_account_move_search_mv_view">
+	        <field name="name">aqua.account.move Search view</field>
+	        <field name="model">account.move</field>
+	        <field name="arch" type="xml">
+            	<search>
+	                <field name="name"/>
+	          		<field name="partner_id"/>
+	          		<field name="ref"/>
+              		<field name="invoice_date"/>
+              		<field name="date"/>
+	            </search>
+	        </field>
+	    </record>
+        
+        <record model="ir.actions.act_window" id="action_aqua_account_move_view">
+			<field name="name">Bills</field>
+			<field name="res_model">account.move</field>
+			<field name="search_view_id" ref="aqua_account_move_search_mv_view"/>
+			<field name="domain">[('is_aqua_bill','=',True)]</field>
+			<field name="context">{'create':False,'edit':False}</field>
+			<field name="view_ids" eval="[(5, 0, 0),
+     				(0, 0, {'view_mode': 'tree', 'view_id': ref('aqua_po_account_move_tree_view')}), 
+     				(0, 0, {'view_mode': 'form', 'view_id': ref('aqua_po_account_move_form_view')})]" /> 
+		</record>
+		
+		
+	</data>
+</odoo>
