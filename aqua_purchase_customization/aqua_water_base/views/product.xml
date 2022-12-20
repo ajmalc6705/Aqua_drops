@@ -1,0 +1,91 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="aqua_water_product_tree_view">
+			<field name="name">aqua product tree</field>
+			<field name="model">product.product</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name" />
+					<field name="default_code" />
+					<field name="categ_id" invisible="1" />
+					<field name="uom_id" invisible="1" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="aqua_water_product_form_view">
+			<field name="name">aqua products form</field>
+			<field name="model">product.product</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form delete="0" duplicate="0">
+					<sheet>
+						<field name="id" invisible="1" />
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+								<field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}" />
+							</button>
+						</div>
+						<div class="oe_title">
+							<label class="oe_edit_only" for="name" string="Product Name" />
+							<h1>
+								<field name="name" placeholder="Name" />
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="default_code" />
+								<field name="supplier_taxes_id" string="Taxes" widget="many2many_tags" force_save="1" />
+								<field name="standard_price" />
+							</group>
+							<group>
+								<field name="categ_id" string="Product Category" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="uom_id" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="type" string="Product Type" readonly="1" />
+								<field name="currency_id" invisible='1' />
+								<field name="cost_currency_id" invisible="1" />
+								<field name="barcode" string="Barcode" invisible="1" />
+								<field name="lst_price" string="Service Cost" />
+								<field name="standard_price" invisible="1" string="Cost" widget='monetary' options="{'currency_field': 'cost_currency_id'}" />
+								<field name="tracking" invisible="1" />
+								<field name="purchase_ok" invisible="1" />
+							</group>
+						</group>
+
+						<group>
+							<group>
+								<field name="create_uid" attrs="{'invisible':[('create_uid', '=', False)]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="create_date" attrs="{'invisible':[('create_date', '=', False)]}" />
+							</group>
+							<group>
+								<field name="write_uid" attrs="{'invisible':[('write_uid', '=', False)]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+								<field name="write_date" attrs="{'invisible':[('write_date', '=', False)]}" />
+							</group>
+						</group>
+
+						<group string="Internal Notes">
+							<field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="activity_ids" widget="mail_activity" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_aqua_water_product_view">
+			<field name="name">Product</field>
+			<field name="res_model">product.product</field>
+			<field name="context">{
+							'default_type':'product', "default_tracking":'lot'}
+			</field>
+			<field name="view_ids" eval="[(5, 0, 0),
+     				(0, 0, {'view_mode': 'tree', 'view_id': ref('aqua_water_base.aqua_water_product_tree_view')}), 
+     				(0, 0, {'view_mode': 'form', 'view_id': ref('aqua_water_base.aqua_water_product_form_view')})]" />
+		</record>
+
+	</data>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_shipment_receive_wiz,access_shipment_receive_wiz,model_shipment_receive_wiz,base.group_user,1,1,1,1
+access_shipment_receive_wiz_lines,access_shipment_receive_wiz_lines,model_shipment_receive_wiz_lines,base.group_user,1,1,1,1

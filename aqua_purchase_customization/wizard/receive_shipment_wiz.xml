@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="aqua_shipment_wiz_form" model="ir.ui.view">
+		<field name="name">shipment.receive.wiz.form</field>
+		<field name="model">shipment.receive.wiz</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<field name="wiz_line_ids" nolabel="1">
+							<tree editable="bottom" delete="0">
+								<field name="product_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="quantity" required="1" />
+								<field name="batch" required="1" />
+								<field name="expiry_date" required="1" />
+								<field name="purchase_line_id" readonly="1" force_save="1"/>
+								<field name="move_id" readonly="1" force_save="1"/>
+							</tree>
+							<form>
+								<field name="product_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="quantity" required="1" />
+								<field name="batch" required="1" />
+								<field name="expiry_date" required="1" />
+							</form>
+						</field>
+					</group>
+					<footer>
+						<button string="Proceed" name="proceed_picking_action" type="object" class="btn-success" />
+						or
+						<button string="Cancel" class="btn-secondary" special="cancel" />
+					</footer>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_aqua_shipment_wiz_form" model="ir.actions.act_window">
+		<field name="name">Receive Shipment</field>
+		<field name="res_model">shipment.receive.wiz</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="aqua_purchase_customization.aqua_shipment_wiz_form" />
+		<field name="target">new</field>
+	</record>
+
+</odoo>
