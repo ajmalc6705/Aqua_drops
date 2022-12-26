@@ -113,15 +113,38 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <tree create="0" edit="0" delete="0" duplicate="0">
-	                <field name="name"/>
-	          		<field name="ref"/>
-<!--              		<field name="tax_totals_json"/>
-	          		<field name="partner_id"/>
-	          		<field name="ref"/>
-              		<field name="invoice_date"/>
-              		<field name="date"/>
-              		<field name="tax_totals_json"/>
--->                </tree>
+	                <field name="name" decoration-bf="1"/>
+                    <field name="invoice_partner_display_name" string="Vendor" />
+                    <field name="invoice_date" string="Bill Date"/>
+                    <field name="date" optional="hide" invisible="1" string="Accounting Date"/>
+                    <field name="invoice_date_due" widget="remaining_days" optional="hide" attrs="{'invisible': [['payment_state', 'in', ('paid', 'in_payment', 'reversed')]]}"/>
+                    <field name="invoice_origin" optional="hide" string="Source Document"/>
+                    <field name="payment_reference" optional="hide" invisible="context.get('default_move_type') in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="ref" optional="hide"/>
+                    <field name="activity_ids" widget="list_activity" optional="hide"/>
+                    <field name="invoice_user_id" optional="hide" string="Salesperson" widget="many2one_avatar_user"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="hide"/>
+                    <field name="amount_untaxed" string="Tax Excluded" sum="Total" optional="show"/>
+                    <field name="amount_tax" string="Tax" sum="Total" optional="hide"/>
+                    <field name="amount_total" string="Total" sum="Total" decoration-bf="1" optional="show"/>
+                    <field name="amount_residual" string="Amount Due" sum="Amount Due" optional="hide"/>
+                    <field name="payment_state"
+                           widget="badge"
+                           decoration-danger="payment_state == 'not_paid'"
+                           decoration-warning="payment_state in ('partial', 'in_payment')"
+                           decoration-success="payment_state in ('paid', 'reversed')"
+                           attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"
+                           optional="show"/>
+                    <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="invoice_source_email" invisible="1"/>
+
+                    <field name="currency_id" groups="base.group_multi_currency" optional="hide" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="move_type" invisible="1"/>
+                    <field name="to_check" widget="boolean_toggle" invisible="1"/>
+                    <field name="amount_total_in_currency_signed" string="Total in Currency" groups="base.group_multi_currency"  optional="hide" invisible="1"/>
+                </tree>
             </field>
         </record>
         
