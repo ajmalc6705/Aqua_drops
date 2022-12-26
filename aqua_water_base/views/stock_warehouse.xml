@@ -9,7 +9,7 @@
             		<header>
             		</header>
                     <sheet>
-                        <label for="name" class="oe_edit_only" string="Unit Name"/>
+                        <label for="name" class="oe_edit_only" string="Branch Name"/>
                         <h1><field name="name"/></h1>
                         <field name="is_aqua_branch" invisible="1"/>
                         <group>
