@@ -8,6 +8,7 @@
 			<field name="arch" type="xml">
 				<tree delete="0" duplicate="0">
                     <field name="create_date"/>
+                    <field name="name"/>
                     <field name="partner_id" readonly="1"/>
                     <field name="user_id"/>
                     <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
