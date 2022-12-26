@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		<record id="aqua_water_sale_order_tree_view" model="ir.ui.view">
+			<field name="name">aqua.sale.order.tree.view</field>
+			<field name="model">sale.order</field>
+            <field name="priority" eval="100"/>
+			<field name="arch" type="xml">
+				<tree delete="0" duplicate="0">
+                    <field name="create_date"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="user_id"/>
+                    <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
+                    <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary" decoration-bf="1" optional="show"/>
+                    <field name="state" decoration-success="state == 'sale' or state == 'done'" decoration-info="state == 'draft' or state == 'sent'" widget="badge" optional="show"/>
+                    <field name="currency_id" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		<record id="aqua_water_sale_order_form_view" model="ir.ui.view">
+			<field name="name">sale.order.form</field>
+			<field name="model">sale.order</field>
+            <field name="priority" eval="100"/>
+			<field name="arch" type="xml">
+				<form string="Sales Order" delete="0" duplicate="0">
+					<header>
+						<button name="action_confirm" id="action_confirm" data-hotkey="v"
+							string="Confirm" class="btn-primary" type="object"
+							attrs="{'invisible': [('state', 'not in', ['draft'])]}" />
+						<button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|', ('state', 'not in', ['draft']), ('id', '=', False)]}" data-hotkey="z" />
+						<button name="action_draft" states="cancel" type="object" string="Set to Quotation" data-hotkey="w" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,sale" />
+					</header>
+					<sheet>
+<!--                    <div class="oe_button_box" name="button_box">
+						<button type="object" name="action_view_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('delivery_count', '=', 0)]}">
+                        <field name="delivery_count" widget="statinfo" string="Delivery"/>
+						</button>
+                    </div>
+-->						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+						</div>
+						
+
+						<group>
+							<group>
+								<field name="aqua_sale_type" required="1" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+								<field name="partner_id" options="{'no_open':True,'no_create': True}" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+								<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('is_branch_readonly','=',True),('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+								<field name="is_branch_readonly" invisible="1"/>
+								<field name="is_aqua_sale" invisible="1"/>
+							</group>
+							<group name="order_details">
+								<field name="date_order" attrs="{'readonly': [('state', 'not in', ['draft'])]}" required="1" />
+								<field name="currency_id" invisible="1" />
+								<field name="tax_country_id" invisible="1" />
+								<field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Order Lines" name="order_lines" attrs="{'readonly': [('state', 'not in', ['draft'])]}">
+								<field name="order_line" attrs="{'readonly': [('state', 'not in', ['draft'])]}" force_save="1">
+									<tree string="Sales Order Lines"
+										editable="bottom">
+										<control>
+											<create name="add_product_control" string="Add a product" />
+										</control>
+										<field name="sequence" widget="handle" />
+										<field name="display_type" invisible="1" />
+										<field name="product_uom_category_id" invisible="1" />
+										<field name="product_updatable" invisible="1" />
+										<field name="product_id" force_save="1" domain="[('is_aqua_product','=',True)]" required="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+										<field name="coupon_ids" domain="[('status','=','open')]" widget="many2many_tags" attrs="{'required': [('parent.aqua_sale_type', '!=', 'internal')],'column_invisible': [('parent.aqua_sale_type', '=', 'internal')]}"/>
+										<field name="product_template_id" string="Product" invisible="1"/>
+										<field name="name" />
+										<field name="analytic_tag_ids" invisible="1"/>
+										<field name="product_uom_qty" force_save="1" attrs="{'readonly': [('parent.aqua_sale_type', '!=', 'internal')]}"/>
+										<field name="qty_delivered" readonly="1"/>
+										<field name="qty_delivered_manual" invisible="1" />
+										<field name="qty_delivered_method" invisible="1" />
+										<field name="qty_invoiced" readonly="1" invisible="1"/>
+										<field name="qty_to_invoice" invisible="1" />
+										<field name="product_uom_readonly" invisible="1" />
+										<field name="product_uom" force_save="1" string="UoM" invisible="1"/>
+										<field name="price_unit" required="1"/>
+										<field name="tax_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+										<field name="discount" string="Disc.%" invisible="1"/>
+										<field name="price_subtotal" widget="monetary" readonly="1" />
+										<field name="price_total" widget="monetary" readonly="1" />
+										<field name="state" invisible="1" />
+										<field name="invoice_status" invisible="1" />
+										<field name="currency_id" invisible="1" />
+										<field name="price_tax" invisible="1" />
+										<field name="company_id" invisible="1" />
+									</tree>
+									<form>
+									</form>
+								</field>
+								<group name="note_group" col="6" class="mt-2 mt-md-0">
+									<group colspan="4">
+										<field name="note" class="oe-bordered-editor" nolabel="1" placeholder="Terms and conditions..." />
+									</group>
+									<group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+										<field name="tax_totals_json" widget="account-tax-totals-field" nolabel="1" colspan="2" />
+									</group>
+									<div class="oe_clear" />
+								</group>
+							</page>
+							<page string="Other Info" name="other_information">
+								<group>
+									<group name="sales_person" string="Sales">
+										<field name="user_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+										<field name="company_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+									</group>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" />
+						<field name="activity_ids" />
+						<field name="message_ids" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_aqua_water_sale">
+			<field name="name">Sale order</field>
+			<field name="res_model">sale.order</field>
+			<field name="context">{'default_is_aqua_sale':True}</field>
+			<field name="domain">[('is_aqua_sale','=',True)]</field>
+			<field name="view_ids" eval="[(5, 0, 0),
+     				(0, 0, {'view_mode': 'tree', 'view_id': ref('aqua_sale_customization.aqua_water_sale_order_tree_view')}), 
+     				(0, 0, {'view_mode': 'form', 'view_id': ref('aqua_sale_customization.aqua_water_sale_order_form_view')})]" />
+		</record>
+	</data>
+</odoo>

@@ -65,6 +65,7 @@ class AquaCustomerCouponLines(models.Model):
     _name = "aqua.customer.coupon.lines"
     _description = "Customer Coupon Lines"   
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _rec_name = "sl_no"
         
     sl_no = fields.Integer(string="SL/No.")
     status = fields.Selection([('open','Open'),('used','Used')],string="Status",default='open',tracking=True)

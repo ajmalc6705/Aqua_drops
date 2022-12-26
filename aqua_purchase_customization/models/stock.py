@@ -34,15 +34,14 @@ class StockPicking(models.Model):
     def button_validate(self):
         res = super(StockPicking,self).button_validate()
         for rec in self:
-            if rec.move_lines:
-                for line in rec.move_lines.move_line_ids:
-                    if line.lot_id:
-                        line.lot_id.expiry_date = line.move_id.expiry_date
-            if rec.state=='done':
-                rec.aqua_action_create_invoice()
+            if rec.is_aqua_picking:
+                if rec.move_lines:
+                    for line in rec.move_lines.move_line_ids:
+                        if line.lot_id:
+                            line.lot_id.expiry_date = line.move_id.expiry_date
+                if rec.state == 'done':
+                    rec.aqua_action_create_invoice()
         return res
-    
-
 
     def _aqua_prepare_invoice(self, po,journal):
         self.ensure_one()
@@ -72,7 +71,7 @@ class StockPicking(models.Model):
 
     def aqua_action_create_invoice(self):
         po = self.purchase_id
-        sequence = 0
+        sequence = 1
         move_type = self._context.get('default_move_type', 'in_invoice')
         journal = self.env['account.move'].with_context(default_move_type=move_type)._get_default_journal()
         if not journal:
