@@ -35,22 +35,13 @@ class PurchaseOrder(models.Model):
     aqua_po_state = fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('cancelled','Cancelled')],default='draft',string="Aqua PO state")
     is_aqua_po = fields.Boolean(string="Is aqua purchase")
 
-    @api.model
-    def _get_picking_type(self, company_id):
-        res = super()._get_picking_type(company_id)
-        if self.warehouse_id and self.warehouse_id.in_type_id:
-            res = self.warehouse_id.in_type_id
-        return res
-
     @api.onchange('warehouse_id')
     def _onchange_warehouse_id(self):
         self.picking_type_id = self.warehouse_id.in_type_id.id
         
     def _prepare_picking(self):
         res = super(PurchaseOrder,self)._prepare_picking()
-        self.picking_type_id = self._get_picking_type(self.company_id.id)
-        location_dest_id = self._get_destination_location()
-        res.update({'picking_type_id': self.picking_type_id.id, 'location_dest_id': location_dest_id})
+        res.update({'location_dest_id':self.warehouse_id and self.warehouse_id.int_type_id and self.warehouse_id.int_type_id.default_location_dest_id and self.warehouse_id.int_type_id.default_location_dest_id.id})
         return res
 
     def purchase_confirm(self):
@@ -77,18 +68,19 @@ class PurchaseOrder(models.Model):
             if rec.aqua_po_state == 'cancelled':
                 rec.button_draft()
                 rec.aqua_po_state = 'draft'
-
-
+                
 class PurchaseOrderLine(models.Model):
   
     _inherit = "purchase.order.line"
-
+    
+    
     expiry_date = fields.Date(string="Expiry Date")
+    
     
     @api.constrains('price_unit')
     def check_price_unit_orderline(self):
         for rec in self:
-            if rec.price_unit < 0:
+            if rec.price_unit <0:
                 raise ValidationError(_("Unit price must be positive for the product '%s'"% str(rec.product_id.name)))
                 
                 
