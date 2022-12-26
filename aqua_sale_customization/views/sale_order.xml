@@ -50,7 +50,8 @@
 								<field name="aqua_sale_type" required="1" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
 								<field name="partner_id" options="{'no_open':True,'no_create': True}"  domain="[('customer_rank','>',0)]" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
 <!--								<field name="partner_id" options="{'no_open':True,'no_create': True}" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>-->
-								<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('is_branch_readonly','=',True),('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+<!--								<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('is_branch_readonly','=',True),('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>-->
+								<field name="warehouse_id" required="1" attrs="{'readonly': [('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 								<field name="is_branch_readonly" invisible="1"/>
 								<field name="is_aqua_sale" invisible="1"/>
 							</group>
