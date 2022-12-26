@@ -77,4 +77,3 @@ class SaleOrderLine(models.Model):
                 raise ValidationError(_("Unit price must be positive for the product '%s'" % str(rec.product_id.name)))
             else:
                 rec.price_unit = rec.product_id.list_price
-                
