@@ -29,7 +29,7 @@ class Warehouse(models.Model):
                                                       'country_id':rec.country_id and rec.country_id.id or False,
                                                       'email':rec.email,
                                                       'phone':rec.phone,
-                                                      'is_aqua_customer':True
+                                                      'is_branch_customer':True
                                                     })
             rec.partner_id = partner.id
 
