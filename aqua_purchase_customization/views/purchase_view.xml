@@ -49,7 +49,8 @@
 					</div>
 					<group>
 						<group>
-							<field name="partner_id" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+<!--							<field name="partner_id" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>-->
+							<field name="partner_id" domain="[('supplier_rank','>',0)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 							<field name="partner_ref" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}"/>
 							<field name="currency_id" invisible="1" force_save="1" />
 							<field name="id" invisible="1" />

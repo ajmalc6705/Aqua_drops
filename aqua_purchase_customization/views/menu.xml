@@ -15,8 +15,8 @@
 			name="Bills" sequence="3" action="aqua_purchase_customization.action_aqua_account_move_view"/>
 			<menuitem id="aqua_po_configuration_menu" parent="aqua_water_purchase_root"
 			name="Configuration" sequence="2" />
-			<menuitem id="aqua_water_product_menu" parent="aqua_po_configuration_menu"
-			name="Product" sequence="1" action="aqua_water_base.action_aqua_water_product_view"/>
+<!--			<menuitem id="aqua_water_product_menu" parent="aqua_po_configuration_menu"-->
+<!--			name="Product" sequence="1" action="aqua_water_base.action_aqua_water_product_view"/>-->
 	
 	</data>
 </odoo>
