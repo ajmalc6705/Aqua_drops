@@ -39,6 +39,25 @@ class AquaCustomerCoupon(models.Model):
     coupon_line_ids = fields.One2many('aqua.customer.coupon.lines','coupon_id',string="Coupon Lines")
     coupon_number = fields.Integer(string="Coupon Number")
     coupon_amount = fields.Float(string="Coupon Amount")
+    amount = fields.Float(string="Total amount",compute='compute_total_amount',store=True)
+    received_amount = fields.Float(string="Received Amount")
+    register_payment = fields.Boolean(string="Is payment registered",compute='compute_register_payment',store=True)
+    payment_ids = fields.Many2many('account.payment','aqua_coupon_payment_rel','payment_id','coupon_id',string="Payments")
+    
+    @api.depends('received_amount','amount')
+    def compute_register_payment(self):
+        for rec in self:
+            register_payment = False
+            if rec.amount == rec.received_amount:
+                register_payment = True
+            rec.register_payment = register_payment
+    
+    @api.depends('coupon_count','coupon_amount')
+    def compute_total_amount(self):
+        for rec in self:
+            rec.amount = rec.coupon_count * rec.coupon_amount
+    
+    
 
     @api.model
     def create(self, vals):
@@ -72,6 +91,13 @@ class AquaCustomerCouponLines(models.Model):
     used_on = fields.Datetime(string="Used On",tracking=True)
     used_by = fields.Many2one('res.users', string="Used By",tracking=True)
     coupon_id = fields.Many2one('aqua.customer.coupon',string="Customer Coupon")
+    customer_id = fields.Many2one('res.partner',string="Customer",compute="compute_customer",store=True)
+    
+    @api.depends('coupon_id','coupon_id.customer_id')
+    def compute_customer(self):
+        for rec in self:
+            rec.customer_id = rec.coupon_id and rec.coupon_id.customer_id and rec.coupon_id.customer_id.id or False
+            
     
     def action_used(self):
     	for rec in self:

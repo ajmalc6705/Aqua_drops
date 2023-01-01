@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="aqua_stock_production_lot_form_view">
+			<field name="name">stock.production.lot.form.view</field>
+			<field name="model">stock.production.lot</field>
+			<field eval="10" name="priority" />
+			<field name="arch" type="xml">
+				<form string="Stock" create="0" edit="0" delete="0">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" string="Barcode" options="{'no_create':True,'no_edit':True,'no_open': True}" />
+								<field name="product_id" options="{'no_create':True,'no_edit':True,'no_open': True}" />
+								<field name="warehouse_id" string="Branch" options="{'no_create':True,'no_edit':True,'no_open': True}" />
+								<field name="partner_id" options="{'no_create':True,'no_edit':True,'no_open': True}" />
+							</group>
+							<group>
+								<field name="product_qty"/>
+								<field name="product_uom_id" options="{'no_create':True,'no_edit':True,'no_open': True}" />
+								<field name="company_id" invisible="1" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="aqua_stock_production_lot_tree_view">
+			<field name="name">stock.production.lot.tree.view</field>
+			<field name="model">stock.production.lot</field>
+			<field eval="10" name="priority" />
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name" string="Barcode" />
+					<field name="product_id" string="Material" />
+					<field name="product_uom_id" />
+					<field name="warehouse_id"/>
+					<field name="product_qty"/>
+				</tree>
+			</field>
+		</record>
+		<record id="aqua_stock_production_lot_search_view" model="ir.ui.view">
+			<field name="name">stock.production.lot.search.view</field>
+			<field name="model">stock.production.lot</field>
+			<field name="arch" type="xml">
+				<search string="Stock">
+					<field name="name" string="Barcode" />
+					<field name="product_id" string="Material" />
+					<field name="warehouse_id"/>
+					<separator />
+					<filter name="group_by_product" domain="[]" context="{'group_by':'product_id'}" />
+                    <filter string="Branch" name="warehouse_id_groupby" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+				</search>
+			</field>
+		</record>
+		<record id="action_aqua_stock_production" model="ir.actions.act_window">
+			<field name="name">Stock</field>
+			<field name="res_model">stock.production.lot</field>
+			<field name="search_view_id" ref="aqua_stock_production_lot_search_view" />
+			<field name="view_ids" eval="[(5, 0, 0),
+     				(0, 0, {'view_mode': 'tree', 'view_id': ref('aqua_stock_production_lot_tree_view')}), 
+     				(0, 0, {'view_mode': 'form', 'view_id': ref('aqua_stock_production_lot_form_view')})]" /> 
+			<field name="domain">[('is_aqua_lot','=',True)]</field>
+			<field name="context">{
+			            	'create':False,
+			            	'duplicate':False,
+			            	'delete':False,
+			            	'edit':False}
+			 </field>
+		</record>
+	</data>
+</odoo>

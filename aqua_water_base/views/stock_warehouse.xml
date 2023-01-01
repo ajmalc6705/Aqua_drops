@@ -9,7 +9,7 @@
             		<header>
             		</header>
                     <sheet>
-                        <label for="name" class="oe_edit_only" string="Branch Name"/>
+                        <label for="name" class="oe_edit_only" string="Unit Name"/>
                         <h1><field name="name"/></h1>
                         <field name="is_aqua_branch" invisible="1"/>
                         <group>
@@ -47,6 +47,10 @@
             <field name="arch" type="xml">
                 <tree string="Branch" delete="0" duplicate="0">
                     <field name="name" string="Branch"/>
+                    <field name="code"/>
+                    <field name="users_ids" widget="many2many_tags"/>
+                    <field name="phone"/>
+                    <field name="email"/>
                 </tree>
             </field>
         </record>
@@ -58,6 +62,10 @@
 	        <field name="arch" type="xml">
             	<search string="Branch Search">
 	                <field name="name" string="Branch"/>
+                    <field name="code"/>
+                    <field name="users_ids"/>
+                    <field name="phone"/>
+                    <field name="email"/>
 	            </search>
 	        </field>
 	    </record>

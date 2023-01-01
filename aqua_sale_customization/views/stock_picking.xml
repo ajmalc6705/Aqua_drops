@@ -52,6 +52,7 @@
 								<field name="date_deadline" readonly="1" />
 								<field name="date_done" readonly="1" string="Effective Date" attrs="{'invisible': [('state', '!=', 'done')]}" />
 								<field name="origin" placeholder="e.g. PO0032" readonly="1" />
+								<field name="aqua_sale_id" force_save="1" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 							</group>
 						</group>
 						<notebook>

@@ -9,6 +9,7 @@
                     <field name="name"/>
                     <field name="phone"/>
                     <field name="email"/>
+                    <field name="warehouse_id"/>
                     <field name="vat" string="GSTIN"/>
                 </tree>
             </field>
@@ -69,6 +70,10 @@
 					<field name="mobile" string="Mobile"/>
 					<field name="email" string="Email"/>
 					<field name="vat" string="GSTIN"/>
+              		<field name="warehouse_id"/>
+                    <group expand="0" string="Group By">
+                    	<filter string="Branch" name="warehouse_id_groupby" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+                    </group>
 				</search>
 			</field>
 		</record>

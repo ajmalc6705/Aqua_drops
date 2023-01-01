@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="aqua_water_stock_root_menu_access_group" model="res.groups">
+	    	<field name="name">Stock management</field>
+	    	<field name="category_id" ref="aqua_water_base.aqua_water_management_module"/>
+	    </record>
+	</data>
+</odoo>
+	    

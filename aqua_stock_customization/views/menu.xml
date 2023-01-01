@@ -1,0 +1,26 @@
+<odoo>
+	<data>
+		<menuitem id="aqua_water_stock_root" 
+			name="Stock" sequence="4"
+			groups="aqua_stock_customization.aqua_water_stock_root_menu_access_group"
+			/>
+			<menuitem id="aqua_water_stock_main_menu" parent="aqua_water_stock_root"
+			name="Stock" sequence="1"
+			action="action_aqua_stock_production"/>
+			<menuitem id="account.menu_finance"
+			groups="aqua_water_base.aqua_base_menu_access"/>
+	        <record model="ir.ui.menu" id="sale.sale_menu_root">
+	  	 			<field name="groups_id" eval="[(6, 0, [ref('aqua_water_base.aqua_base_menu_access')])]"/>
+			</record>
+			
+			<record model="ir.ui.menu" id="purchase.menu_purchase_root">
+	  	 			<field name="groups_id" eval="[(6, 0, [ref('aqua_water_base.aqua_base_menu_access')])]"/>
+			</record>
+	        <record model="ir.ui.menu" id="account.menu_finance">
+	  	 			<field name="groups_id" eval="[(6, 0, [ref('aqua_water_base.aqua_base_menu_access')])]"/>
+			</record>
+	        <record model="ir.ui.menu" id="stock.menu_stock_root">
+	  	 			<field name="groups_id" eval="[(6, 0, [ref('aqua_water_base.aqua_base_menu_access')])]"/>
+			</record>
+	</data>
+</odoo>

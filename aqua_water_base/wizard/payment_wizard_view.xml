@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="aqua_coupon_payment_form_view" model="ir.ui.view">
+            <field name="name">coupon.payment.wizard</field>
+            <field name="model">coupon.payment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Register Payment">
+                    <sheet>
+                        <group>
+							<group name="group1">
+                                <field name="received_amount"/>
+	                            <field name="journal_id" options="{'no_open': True, 'no_create': True}" required="1"/>
+	                        </group>
+	                        <group name="group2">
+                                <field name="currency_id" required="1" options="{'no_create': True, 'no_open': True}" invisible="1"/>
+                                <field name="payment_date"/>
+                                <field name="communication"/>
+                                <field name="credit_amount"/>
+	                        </group>							
+<!--							
+                            <group>
+                                <field name="amount"/>
+                                <field name="journal_id"/>
+                                <field name="payment_method_id"/>
+                                <field name="received_amount"/>
+                            </group>
+                            <group>
+                                <field name="payment_date"/>
+                                <field name="communication"/>
+                                <field name="credit_amount"/>
+                            </group>
+-->                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="confirm" name="create_sale_payment" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-default" special="cancel"/>
+                    </footer>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="aqua_coupon_payment_act_window" model="ir.actions.act_window">
+            <field name="name">Register Payment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">coupon.payment.wizard</field>
+			<field name="view_id" ref="aqua_water_base.aqua_coupon_payment_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

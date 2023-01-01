@@ -7,9 +7,10 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
 			<tree delete="0" duplicate="0">
-                <field name="partner_ref" />
                 <field name="name" string="Reference" readonly="1" />
                 <field name="partner_id"/>
+                <field name="partner_ref" />
+                <field name="warehouse_id" />
                 <field name="date_order" />
                 <field name="priority"/>
                 <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary" optional="hide"/>
@@ -49,8 +50,7 @@
 					</div>
 					<group>
 						<group>
-<!--							<field name="partner_id" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>-->
-							<field name="partner_id" domain="[('supplier_rank','>',0)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+							<field name="partner_id" domain="[('is_aqua_vendor','=',True)]" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 							<field name="partner_ref" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}"/>
 							<field name="currency_id" invisible="1" force_save="1" />
 							<field name="id" invisible="1" />
@@ -59,8 +59,7 @@
 						</group>
 						<group>
 							<field name="date_order" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" />
-<!--							<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('aqua_po_state','in',('confirmed','cancelled')),('is_branch_readonly','=',True)]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>-->
-							<field name="warehouse_id" required="1" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+							<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('aqua_po_state','in',('confirmed','cancelled')),('is_branch_readonly','=',True)]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 							<field name="is_branch_readonly" invisible="1"/>
 			                <field name="priority" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}"/>
 						</group>
@@ -82,8 +81,7 @@
 									<field name="product_uom_category_id" invisible="1" />
 									<field name="invoice_lines" invisible="1" />
 									<field name="sequence" widget="handle" />
-<!--									<field name="product_id" domain="[('is_aqua_product','=',True)]" required="1" force_save="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>-->
-									<field name="product_id" required="1" force_save="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+									<field name="product_id" domain="[('is_aqua_product','=',True)]" required="1" force_save="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 									<field name="name" widget="section_and_note_text" />
 									<field name="date_planned" invisible="1"  attrs="{'required': [('display_type', '=', False)]}" force_save="1" />
 									<field name="account_analytic_id" invisible="1"  context="{'default_partner_id':parent.partner_id}" groups="analytic.group_analytic_accounting" domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" />
@@ -142,12 +140,55 @@
 			</form>
             </field>
         </record>
+       <record id="aqua_purchase_order_filter" model="ir.ui.view">
+            <field name="name">PO search</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Order">
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="name" string="Order"
+                        filter_domain="['|', '|', ('name', 'ilike', self), ('partner_ref', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                    <field name="user_id"/>
+                    <field name="product_id"/>
+                    <field name="origin"/>
+                    <field name="warehouse_id"/>
+                    <filter name="my_purchases" string="My Purchases" domain="[('user_id', '=', uid)]"/>
+                    <filter string="Starred" name="starred" domain="[('priority', '=', '1')]"/>
+                    <separator/>
+                    <filter name="draft" string="RFQs" domain="[('state', 'in', ('draft', 'sent', 'to approve'))]"/>
+                    <separator/>
+                    <filter name="approved" string="Purchase Orders" domain="[('state', 'in', ('purchase', 'done'))]"/>
+                    <filter name="to_approve" string="To Approve" domain="[('state', '=', 'to approve')]"/>
+                    <separator/>
+                    <filter name="order_date" string="Order Date" date="date_order"/>
+                    <filter name="draft_rfqs" string="Draft RFQs" domain="[('state', '=', 'draft')]"/>
+                    <filter name="waiting_rfqs" string="Waiting RFQs" domain="[('state', '=', 'sent'), ('date_order', '&gt;=', datetime.datetime.now())]"/>
+                    <filter name="late_rfqs" string="Late RFQs" domain="[('state', 'in', ['draft', 'sent', 'to approve']),('date_order', '&lt;', datetime.datetime.now())]"/>
+                    <separator/>
+                    <filter invisible="1" string="Late Activities" name="activities_overdue"
+                        domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all records which has next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activities_today"
+                        domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Vendor" name="vendor" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Purchase Representative" name="representative" domain="[]" context="{'group_by': 'user_id'}"/>
+                        <filter string="Order Date" name="order_date" domain="[]" context="{'group_by': 'date_order'}"/>
+	                    <filter string="Branch" name="warehouse_id_groupby" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
         
         <record model="ir.actions.act_window" id="action_aqua_water_po">
 			<field name="name">Purchase order</field>
 			<field name="res_model">purchase.order</field>
 			<field name="context">{'default_is_aqua_po':True}</field>
 			<field name="domain">[('is_aqua_po','=',True)]</field>
+			<field name="search_view_id" ref="aqua_purchase_customization.aqua_purchase_order_filter"/>
 			<field name="view_ids" eval="[(5, 0, 0),
      				(0, 0, {'view_mode': 'tree', 'view_id': ref('aqua_purchase_customization.aqua_water_purchase_tree_view')}), 
      				(0, 0, {'view_mode': 'form', 'view_id': ref('aqua_purchase_customization.aqua_water_purchase_form_view')})]" /> 
