@@ -8,8 +8,10 @@
 				<tree delete="0" duplicate="0">
 					<field name="name" />
 					<field name="default_code" />
-					<field name="categ_id" invisible="1" />
-					<field name="uom_id" invisible="1" />
+					<field name="categ_id" />
+					<field name="uom_id"/>
+					<field name="standard_price" />
+					<field name="lst_price" string="Service Cost" />
 				</tree>
 			</field>
 		</record>
@@ -39,7 +41,7 @@
 							<group>
 								<field name="default_code" />
 								<field name="supplier_taxes_id" string="Taxes" widget="many2many_tags" force_save="1" />
-								<field name="standard_price" />
+								<field name="standard_price" string="Cost" widget='monetary' options="{'currency_field': 'cost_currency_id'}" />
 								<field name="barcode"/>
 							</group>
 							<group>
@@ -50,8 +52,7 @@
 								<field name="currency_id" invisible='1' />
 								<field name="cost_currency_id" invisible="1" />
 								<field name="barcode" string="Barcode" invisible="1" />
-								<field name="lst_price" string="Service Cost" />
-								<field name="standard_price" invisible="1" string="Cost" widget='monetary' options="{'currency_field': 'cost_currency_id'}" />
+								<field name="lst_price" string="Sales Price" />
 								<field name="tracking" invisible="1" />
 								<field name="purchase_ok" invisible="1" />
 							</group>

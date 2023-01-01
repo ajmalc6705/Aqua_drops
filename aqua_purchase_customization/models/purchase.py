@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
 
 
 class PurchaseOrder(models.Model):
@@ -34,6 +35,17 @@ class PurchaseOrder(models.Model):
     is_branch_readonly = fields.Boolean(string="Branch Visibility",default=_get_is_branch_readonly)
     aqua_po_state = fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('cancelled','Cancelled')],default='draft',string="Aqua PO state")
     is_aqua_po = fields.Boolean(string="Is aqua purchase")
+    latest_picking_ref = fields.Char(compute='compute_picking_ref', store=True, string="Shipment Ref")
+
+    @api.depends('picking_ids')
+    def compute_picking_ref(self):
+        for rec in self:
+            picking_ref = ', '.join(picking.name for picking in rec.picking_ids)
+            if len(picking_ref) > 25:
+                picking_ref = picking_ref[:24]
+            rec.latest_picking_ref = picking_ref
+
+
 
     @api.model
     def _get_picking_type(self, company_id):
@@ -50,7 +62,8 @@ class PurchaseOrder(models.Model):
         res = super(PurchaseOrder,self)._prepare_picking()
         self.picking_type_id = self._get_picking_type(self.company_id.id)
         location_dest_id = self._get_destination_location()
-        res.update({'picking_type_id': self.picking_type_id.id, 'location_dest_id': location_dest_id})
+        res.update({'picking_type_id': self.picking_type_id.id, 'location_dest_id': location_dest_id,
+                    'warehouse_id': self.warehouse_id and self.warehouse_id.id or False})
         return res
 
     def purchase_confirm(self):
@@ -78,10 +91,35 @@ class PurchaseOrder(models.Model):
                 rec.button_draft()
                 rec.aqua_po_state = 'draft'
 
+    def _get_action_view_picking(self, pickings):
+        if self.is_aqua_po:
+            self.ensure_one()
+            result = self.env["ir.actions.actions"]._for_xml_id('aqua_purchase_customization.action_aqua_water_shipment')
+            # override the context to get rid of the default filtering on operation type
+            result['context'] = {'default_partner_id': self.partner_id.id, 'default_origin': self.name, 'default_picking_type_id': self.picking_type_id.id}
+            # choose the view_mode accordingly
+            if not pickings or len(pickings) > 1:
+                result['domain'] = [('id', 'in', pickings.ids)]
+            elif len(pickings) == 1:
+                res = self.env.ref('aqua_purchase_customization.aqua_water_shipment_form_view', False)
+                form_view = [(res and res.id or False, 'form')]
+                result['views'] = form_view + [(state, view) for state, view in result.get('views', []) if view != 'form']
+                result['res_id'] = pickings.id
+            return result
+        else:
+            return super()._get_action_view_picking(pickings)
+
 
 class PurchaseOrderLine(models.Model):
   
     _inherit = "purchase.order.line"
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(PurchaseOrderLine, self).default_get(fields_list)
+        today = fields.Date.context_today(self)
+        res.update({'expiry_date': today + relativedelta(years=1)})
+        return res
 
     expiry_date = fields.Date(string="Expiry Date")
     

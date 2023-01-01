@@ -24,11 +24,10 @@
 				<form string="Customer" delete="0" duplicate="0">
                 	<sheet>
  	                   		<div class="oe_button_box" name="button_box">
-	                            <button type="object" name="action_view_sale_invoice"
-	                                    class="oe_stat_button"
+	                            <button type="object" name="action_view_sale_invoice" class="oe_stat_button"
 	                                    attrs="{'invisible':[('sale_bill_count','=',0)]}"
-	                                    icon="fa-pencil-square-o"
-	                                    string="Sale Bills">
+	                                    icon="fa-pencil-square-o">
+									<field name="sale_bill_count" widget="statinfo" string="Due Amount"/>
 	                            </button>
 	                   		</div>
                   	<div class="oe_title">
