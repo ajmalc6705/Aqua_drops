@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['aqua_purchase_customization','sale_stock'],
+    'depends': ['aqua_stock_customization'],
 
     # always loaded
     'data': [
@@ -28,6 +28,8 @@
         # 'security/ir.model.access.csv',
         'views/sale_order.xml',
         'views/stock_picking.xml',
+        'views/customer.xml',
+        'views/account_move.xml',
         'views/menu.xml',
     ],
     # only loaded in demonstration mode

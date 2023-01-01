@@ -20,13 +20,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock'],
+    'depends': ['base','stock','account'],
 
     # always loaded
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequence.xml',
+        'wizard/payment_wizard_view.xml',
         'views/stock_warehouse.xml',
         'views/customer_coupon.xml',
         'views/res_users.xml',

@@ -32,3 +32,6 @@ class ResPartner(models.Model):
     is_branch_readonly = fields.Boolean(string="Branch Visibility",default=_get_is_branch_readonly)
     is_aqua_customer = fields.Boolean(string="Is aqua customer")
     is_branch_customer = fields.Boolean(string="Is branch customer")
+    is_aqua_vendor = fields.Boolean(string="Is aqua vendor")
+    account_move_ids = fields.One2many('account.move','partner_id',string="Bills")
+    

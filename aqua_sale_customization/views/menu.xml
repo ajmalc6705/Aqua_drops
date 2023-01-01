@@ -1,21 +1,25 @@
 <odoo>
 	<data>
 		<menuitem id="aqua_water_sales_root" 
-			name="Aqua Sales " sequence="4"
+			name="Sales " sequence="4"
 			groups="aqua_sale_customization.aqua_water_sales_root_menu_access_group"
 			/>
-			<menuitem id="aqua_water_sale_menu" parent="aqua_water_sales_root"
-			name="Sales" sequence="1"/>
-			
-			<menuitem id="aqua_water_sale_main_menu" parent="aqua_water_sale_menu"
+			<menuitem id="aqua_water_sale_main_menu" parent="aqua_water_sales_root"
 			name="Sales" sequence="1"
 			action="aqua_sale_customization.action_aqua_water_sale"/>
-			<menuitem id="aqua_water_delivery_main_menu" parent="aqua_water_sale_menu"
+			<menuitem id="aqua_water_delivery_main_menu" parent="aqua_water_sales_root"
 			name="Delivery" sequence="2"
 			action="aqua_sale_customization.action_aqua_water_delivery"/>
+			<menuitem id="aqua_water_sale_bill_main_menu" parent="aqua_water_sales_root"
+			name="Bills" sequence="3"
+			action="aqua_sale_customization.action_sale_aqua_account_move_view"/>
 			<menuitem id="aqua_sales_configuration_menu" parent="aqua_water_sales_root"
-			name="Configuration" sequence="2" />
+			name="Master Data" sequence="4" />
 			<menuitem id="aqua_sales_customer_menu" parent="aqua_sales_configuration_menu"
-			name="Customer" sequence="1" action="aqua_water_base.aqua_customer_action"/>
+			name="Customer" sequence="1" action="aqua_sale_customer_action"/>
+			<menuitem id="aqua_water_stock_delivery_main_menu" parent="aqua_stock_customization.aqua_water_stock_root"
+			name="Delivery" sequence="3"
+			action="aqua_sale_customization.action_aqua_water_delivery"/>
+
 	</data>
 </odoo>

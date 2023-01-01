@@ -6,5 +6,9 @@ class AccountMove(models.Model):
     _inherit = "account.move"
     
     is_aqua_bill = fields.Boolean(string="Is aqua bill")
-    warehouse_id = fields.Many2one('stock.warehouse',string="Branch")
-    picking_id = fields.Many2one('stock.picking')
+
+class AccountPayment(models.Model):
+  
+    _inherit = "account.payment"
+    
+    is_aqua_coupon_payment = fields.Boolean(string="Is aqua coupon bill")

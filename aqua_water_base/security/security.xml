@@ -13,6 +13,14 @@
 	    	<field name="name">Admin User</field>
 	    	<field name="category_id" ref="aqua_water_base.aqua_water_management_module"/>
 	    </record>
+        <record id="aqua_water_base_ho_user_access_group" model="res.groups">
+	    	<field name="name">HO User</field>
+	    	<field name="category_id" ref="aqua_water_base.aqua_water_management_module"/>
+	    </record>
+        <record id="aqua_base_menu_access" model="res.groups">
+	    	<field name="name">Enable Base Menu</field>
+	    	<field name="category_id" ref="aqua_water_base.aqua_water_management_module"/>
+	    </record>
 	</data>
 </odoo>
 	    

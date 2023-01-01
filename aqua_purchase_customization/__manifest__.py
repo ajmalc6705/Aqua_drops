@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['aqua_water_base','purchase_stock'],
+    'depends': ['aqua_stock_customization'],
 
     # always loaded
     'data': [
@@ -31,6 +31,7 @@
         'views/stock_picking.xml',
         'views/stock_move.xml',
         'views/account_move.xml',
+        'views/vendor.xml',
         'views/menu.xml'
     ],
     # only loaded in demonstration mode
