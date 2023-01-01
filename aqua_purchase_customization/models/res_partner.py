@@ -8,20 +8,18 @@ class ResPartner(models.Model):
     purchase_due_amount = fields.Float(string="Due Amount",compute='compute_po_bils')
     purchase_bill_count = fields.Integer(string="Purchase bills count",compute='compute_po_bils')
     
-    # @api.depends('account_move_ids','account_move_ids.move_type','account_move_ids.is_aqua_bill','account_move_ids.amount_residual')
+    @api.depends('account_move_ids','account_move_ids.move_type','account_move_ids.is_aqua_bill','account_move_ids.amount_residual')
     def compute_po_bils(self):
         for rec in self:
-            account_move_ids = []
             amount = 0
             count = 0
             for line in rec.account_move_ids:
-                if line.is_aqua_bill and line.move_type=='in_invoice':
-                    count+= 1
+                if line.is_aqua_bill and line.move_type == 'in_invoice':
+                    count += 1
                     amount += line.amount_residual
             rec.purchase_due_amount = amount
             rec.purchase_bill_count = count
                     
-
     def action_view_purchase_invoice(self):
         for rec in self:
             account_move_ids = []

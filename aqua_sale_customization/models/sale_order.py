@@ -33,6 +33,13 @@ class SaleOrder(models.Model):
     aqua_sale_type = fields.Selection([('internal','Internal'),('coupon','Coupon')],default='internal',string="Sale Type")
     is_aqua_sale = fields.Boolean(string="Is aqua sale")
 
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        if self.is_aqua_sale:
+            self.warehouse_id = self.env.user.current_branch_id and self.env.user.current_branch_id.id or False
+        else:
+            return super(SaleOrder, self)._onchange_company_id()
+
     @api.onchange('warehouse_id')
     def onchange_sale_warehouse_id(self):
         for rec in self:
@@ -53,74 +60,87 @@ class SaleOrder(models.Model):
     def create_sale_picking(self):
         picking = self.env['stock.picking']
         move_pool = self.env['stock.move']
-        picking_id = False
         for rec in self:
-            picking_id = picking.create({
-                'location_dest_id': self.env.ref('stock.stock_location_customers').id,
-                'location_id': rec.warehouse_id.int_type_id.default_location_src_id.id,
-                'picking_type_id': rec.warehouse_id.out_type_id.id,
-                'origin': str(rec.name),
-                'partner_id':rec.partner_id.id,
-                'is_aqua_sale_picking':True,
-                'aqua_sale_id':rec.id
-                })
-            picking_id.action_confirm()
-            move_lines = []
-            for line in rec.order_line:
-                move_id = move_pool.create({
-                    'location_dest_id': self.env.ref('stock.stock_location_customers').id,
-                    'location_id': rec.warehouse_id.int_type_id.default_location_src_id.id,
-                    'product_id': line.product_id.id or False,
-                    'product_uom_qty': line.product_uom_qty or False,
-                    'product_uom': line.product_uom.id or False,
-                    'picking_type_id': rec.warehouse_id.out_type_id.id,
-                    'origin': rec.name,
-                    'name': rec.name + " - " + line.product_id.name,
-                    'sale_line_id':line.id,
-                    'picking_id':picking_id.id
-                })
-                
-            for mv in picking_id.move_lines:
-                product_uom_id = False
-                if mv.product_uom:
-                    product_uom_id = mv.product_uom.id
-                else:
-                    product_uom_id = mv.product_id.uom_id.id
-                mv.move_line_ids = [(0,0,{'picking_id': picking_id.id,
-                                          'location_id': mv.location_id and mv.location_id.id or False,
-                                           'location_dest_id': mv.location_dest_id and mv.location_dest_id.id or False,
-                                           'qty_done': mv.product_uom_qty,
-                                           'product_uom_qty':mv.product_uom_qty,
-                                           'product_uom_id': product_uom_id,
-                                           'product_id': mv.product_id and mv.product_id.id or False
-                                          })]
-
-                if len(mv.move_line_ids) > 1:
-                    for mv_line in move.move_line_ids[1:]:
-                        mv_line.unlink()
-            picking_id.action_assign()
-            rec._action_confirm()
+            # picking_id = picking.create({
+            #     'location_dest_id': self.env.ref('stock.stock_location_customers').id,
+            #     'location_id': rec.warehouse_id.int_type_id.default_location_src_id.id,
+            #     'picking_type_id': rec.warehouse_id.out_type_id.id,
+            #     'warehouse_id': self.warehouse_id and self.warehouse_id.id or False,
+            #     'origin': str(rec.name),
+            #     'partner_id': rec.partner_id.id,
+            #     'is_aqua_sale_picking': True,
+            #     'aqua_sale_id': rec.id
+            #     })
+            # picking_id.action_confirm()
+            # for line in rec.order_line:
+            #     move_id = move_pool.create({
+            #         'location_dest_id': self.env.ref('stock.stock_location_customers').id,
+            #         'location_id': rec.warehouse_id.int_type_id.default_location_src_id.id,
+            #         'product_id': line.product_id.id or False,
+            #         'product_uom_qty': line.product_uom_qty or False,
+            #         'product_uom': line.product_uom.id or False,
+            #         'picking_type_id': rec.warehouse_id.out_type_id.id,
+            #         'origin': rec.name,
+            #         'name': rec.name + " - " + line.product_id.name,
+            #         'sale_line_id':line.id,
+            #         'picking_id':picking_id.id
+            #     })
+            #
+            # for mv in picking_id.move_lines:
+            #     if mv.product_uom:
+            #         product_uom_id = mv.product_uom.id
+            #     else:
+            #         product_uom_id = mv.product_id.uom_id.id
+            #     mv.move_line_ids = [(0,0,{'picking_id': picking_id.id,
+            #                               'location_id': mv.location_id and mv.location_id.id or False,
+            #                                'location_dest_id': mv.location_dest_id and mv.location_dest_id.id or False,
+            #                                'product_uom_qty':mv.product_uom_qty,
+            #                                'product_uom_id': product_uom_id,
+            #                                'product_id': mv.product_id and mv.product_id.id or False,
+            #                               'move_id': mv.id
+            #                               })]
+            #
+            #     if len(mv.move_line_ids) > 1:
+            #         for mv_line in mv.move_line_ids[1:]:
+            #             mv_line.unlink()
+            # picking_id.action_assign()
+            rec.action_confirm()
+            for picking in rec.picking_ids:
+                picking.write({'warehouse_id': self.warehouse_id and self.warehouse_id.id or False,
+                               'is_aqua_sale_picking': True,
+                               'aqua_sale_id': rec.id
+                               })
             if rec.aqua_sale_type == 'coupon':
                 for line in rec.order_line:
                     for coupon in line.coupon_ids:
                         coupon.status = "used"
             rec.state = 'sale'
 
+    def _get_action_view_picking(self, pickings):
+        if self.is_aqua_sale:
+            action = self.env["ir.actions.actions"]._for_xml_id("aqua_sale_customization.action_aqua_water_delivery")
+    
+            if len(pickings) > 1:
+                action['domain'] = [('id', 'in', pickings.ids)]
+            elif pickings:
+                form_view = [(self.env.ref('aqua_sale_customization.aqua_water_delivery_form_view').id, 'form')]
+                if 'views' in action:
+                    action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+                else:
+                    action['views'] = form_view
+                action['res_id'] = pickings.id
+            # Prepare the context.
+            picking_id = pickings.filtered(lambda l: l.picking_type_id.code == 'outgoing')
+            if picking_id:
+                picking_id = picking_id[0]
+            else:
+                picking_id = pickings[0]
+            action['context'] = dict(self._context, default_partner_id=self.partner_id.id, default_picking_type_id=picking_id.picking_type_id.id, default_origin=self.name, default_group_id=picking_id.group_id.id)
+            return action
+        else:
+            return super()._get_action_view_picking(pickings)
+
             
-    # def action_confirm(self):
-    #     res = super(SaleOrder, self).action_confirm()
-    #
-    #     for rec in self:
-    #         if rec.aqua_sale_type == 'coupon':
-    #             for line in rec.order_line:
-    #                 for coupon in line.coupon_ids:
-    #                     coupon.status = "used"
-    #         if rec.picking_ids:
-    #             for picking in rec.picking_ids:
-    #                 picking.is_aqua_sale_picking = True
-    #     return res
-
-
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
     

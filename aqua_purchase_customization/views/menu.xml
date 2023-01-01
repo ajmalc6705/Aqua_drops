@@ -23,9 +23,9 @@
 -->			<menuitem id="aqua_po_configuration_menu" parent="aqua_water_purchase_root"
 			name="Master Data" sequence="4" />
 			<menuitem id="aqua_water_product_menu" parent="aqua_po_configuration_menu"
-			name="Product" sequence="1" action="aqua_water_base.action_aqua_water_product_view"/>
+			name="Products" sequence="1" action="aqua_water_base.action_aqua_water_product_view"/>
 			<menuitem id="aqua_water_po_vendor_menu" parent="aqua_po_configuration_menu"
-			name="Vendor" sequence="2" action="aqua_purchase_customization.aqua_vendor_action"/>
+			name="Vendors" sequence="2" action="aqua_purchase_customization.aqua_vendor_action"/>
 			<menuitem id="aqua_water_stock_shipment_menu" parent="aqua_stock_customization.aqua_water_stock_root"
 			name="Shipment" sequence="2" action="aqua_purchase_customization.action_aqua_water_shipment"/>
 	</data>

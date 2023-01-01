@@ -12,10 +12,11 @@
                 <field name="partner_ref" />
                 <field name="warehouse_id" />
                 <field name="date_order" />
-                <field name="priority"/>
+                <field name="latest_picking_ref"/>
                 <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary" optional="hide"/>
                 <field name="amount_total" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="currency_id" invisible="1"/>
+				<field name="aqua_po_state"/>
                 <field name="state" invisible="1"/>
         	</tree>
             </field>
@@ -29,9 +30,11 @@
             <field name="arch" type="xml">
 			<form string="Purchase Order" class="o_purchase_order" delete="0" duplicate="0">
 				<header>
-					<button name="purchase_confirm" type="object" attrs="{'invisible':[('aqua_po_state','not in',['draft'])]}" string="Confirm Order"/>
+					<button name="purchase_confirm" type="object" class="oe_highlight"
+							attrs="{'invisible':[('aqua_po_state','not in',['draft'])]}" string="Confirm Order"/>
 					<button name="po_draft" states="cancel" string="Set to Draft" type="object" attrs="{'invisible':[('aqua_po_state','not in',['cancelled'])]}"/>
 					<button name="po_cancel" string="Cancel" type="object" attrs="{'invisible':[('aqua_po_state','not in',['draft'])]}"/>
+					<field name="latest_picking_ref" attrs="{'invisible': [('latest_picking_ref', '=', '')]}"/>
 					<field name="aqua_po_state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" readonly="1" />
 					<field name="state" invisible="1" />
 				</header>
@@ -40,6 +43,10 @@
 						<button type="object" name="action_view_invoice" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('invoice_count', '=', 0), ('state', 'in', ('draft','sent','to approve'))]}">
 							<field name="invoice_count" widget="statinfo" string="Vendor Bills" />
 							<field name="invoice_ids" invisible="1" />
+						</button>
+
+						<button type="object" name="action_view_picking" class="oe_stat_button" icon="fa-truck" attrs="{'invisible':[('incoming_picking_count','=', 0)]}" groups="stock.group_stock_user">
+							<field name="incoming_picking_count" widget="statinfo" string="Receipt" help="Incoming Shipments"/>
 						</button>
 					</div>
 					<div class="oe_title">

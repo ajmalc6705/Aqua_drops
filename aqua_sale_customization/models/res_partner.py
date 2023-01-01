@@ -8,7 +8,7 @@ class ResPartner(models.Model):
     sale_due_amount = fields.Float(string="Due Amount",compute='compute_sale_bils')
     sale_bill_count = fields.Integer(string="Sale bills count",compute='compute_sale_bils')
     
-    # @api.depends('account_move_ids','account_move_ids.move_type','account_move_ids.is_aqua_sale_bill','account_move_ids.amount_residual')
+    @api.depends('account_move_ids','account_move_ids.move_type','account_move_ids.is_aqua_sale_bill','account_move_ids.amount_residual')
     def compute_sale_bils(self):
         for rec in self:
             account_move_ids = []
