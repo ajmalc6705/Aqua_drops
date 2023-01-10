@@ -7,7 +7,67 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
     _order = 'id desc'
     
-    invoice_id = fields.Many2one('account.move')
+    po_attachment = fields.Binary(string='Attachment', attachment=True)
+    po_file_name = fields.Char(string="File name")
+    document_number = fields.Char(string="Document Number")
+    
+    def aqua_action_receive_shipment(self):
+        for rec in self:
+            context = self._context.copy()
+            picking_id = None
+            if rec.state == 'assigned':
+                picking_id = rec.id
+    
+            context.update({
+                'active_model': 'stock.picking',
+                'active_id': picking_id,
+                'active_ids': [picking_id]
+            })
+            return_vals = {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'res_model': 'stock.picking.validate',
+                'view_id':self.env.ref('aqua_purchase_customization.aqua_stock_picking_validate').id,
+                'context': context
+            }
+            return return_vals
+
+
+    def action_view_shipment_invoice(self):
+        for rec in self:
+            if rec.invoice_id:
+                form_view_id = self.env.ref('aqua_purchase_customization.aqua_po_account_move_form_view').id or False
+                tree_view_id = self.env.ref('aqua_purchase_customization.aqua_po_account_move_tree_view').id or False
+                return {
+                    'name': _('Vendor Bills'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'account.move',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', '=',rec.invoice_id.id)],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
+
+    def action_view_po(self):
+        for rec in self:
+            if rec.purchase_id:
+                form_view_id = self.env.ref('aqua_purchase_customization.aqua_water_purchase_form_view').id or False
+                tree_view_id = self.env.ref('aqua_purchase_customization.aqua_water_purchase_tree_view').id or False
+                return {
+                    'name': _('Purchase Order'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'purchase.order',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', '=',rec.purchase_id.id)],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
     
     def receive_shipment_action(self):
         shipment_wiz = self.env['shipment.receive.wiz']
@@ -31,6 +91,21 @@ class StockPicking(models.Model):
                 'target': 'new',
                 'res_id': shipment_obj.id,
             }
+
+    def button_validate(self):
+        res = super(StockPicking,self).button_validate()
+        for rec in self:
+            if rec.is_aqua_picking:
+                if rec.move_lines:
+                    for line in rec.move_lines.move_line_ids:
+                        if line.lot_id:
+                            line.lot_id.expiry_date = line.move_id.expiry_date
+                            line.lot_id.warehouse_id = line.move_id.warehouse_id
+                            line.lot_id.location_id = rec.location_dest_id.id
+                            line.lot_id.is_aqua_lot = True
+                # if rec.state == 'done':
+                #     rec.aqua_action_create_invoice()
+        return res
 
     def _aqua_prepare_invoice(self, po,journal):
         self.ensure_one()
@@ -79,6 +154,7 @@ class StockPicking(models.Model):
         if invoice_vals:
             AccountMove = self.env['account.move'].with_context(default_move_type='in_invoice')
             invoice_id = AccountMove.create(invoice_vals)
+            invoice_id.purchase_id = po and po.id
             invoice_id.action_post()
             picking_id.write({'invoice_id': invoice_id.id})
 

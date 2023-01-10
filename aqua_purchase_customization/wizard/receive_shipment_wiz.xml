@@ -11,7 +11,7 @@
 							<tree editable="bottom" delete="0">
 								<field name="product_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
 								<field name="quantity" required="1" />
-								<field name="batch" required="1" />
+								<field name="batch" />
 								<field name="expiry_date" required="1" />
 								<field name="purchase_line_id" readonly="1" force_save="1"/>
 								<field name="move_id" readonly="1" force_save="1"/>
@@ -19,7 +19,7 @@
 							<form>
 								<field name="product_id" readonly="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
 								<field name="quantity" required="1" />
-								<field name="batch" required="1" />
+								<field name="batch"/>
 								<field name="expiry_date" required="1" />
 							</form>
 						</field>

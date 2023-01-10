@@ -32,19 +32,23 @@
 				<header>
 					<button name="purchase_confirm" type="object" class="oe_highlight"
 							attrs="{'invisible':[('aqua_po_state','not in',['draft'])]}" string="Confirm Order"/>
+					<button name="aqua_action_receive_shipment" type="object" string="Receive Shipment"
+                            attrs="{'invisible': ['|',('aqua_po_state', 'not in', ('confirmed')),('remaining_qty','=',0.00)]}"
+                            class="oe_highlight" />
+					/>
 					<button name="po_draft" states="cancel" string="Set to Draft" type="object" attrs="{'invisible':[('aqua_po_state','not in',['cancelled'])]}"/>
 					<button name="po_cancel" string="Cancel" type="object" attrs="{'invisible':[('aqua_po_state','not in',['draft'])]}"/>
-					<field name="latest_picking_ref" attrs="{'invisible': [('latest_picking_ref', '=', '')]}"/>
-					<field name="aqua_po_state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" readonly="1" />
+<!--					<field name="latest_picking_ref" attrs="{'invisible': [('latest_picking_ref', '=', '')]}"/>
+-->					<field name="aqua_po_state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" readonly="1" />
 					<field name="state" invisible="1" />
 				</header>
 				<sheet>
 					<div class="oe_button_box" name="button_box">
-						<button type="object" name="action_view_invoice" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('invoice_count', '=', 0), ('state', 'in', ('draft','sent','to approve'))]}">
-							<field name="invoice_count" widget="statinfo" string="Vendor Bills" />
-							<field name="invoice_ids" invisible="1" />
+						<button type="object" name="action_view_po_invoice"
+								class="oe_stat_button" icon="fa-pencil-square-o"
+								attrs="{'invisible':[('po_bills_count', '=', 0)]}">
+							<field name="po_bills_count" widget="statinfo" string="Vendor Bills" readonly="1"/>
 						</button>
-
 						<button type="object" name="action_view_picking" class="oe_stat_button" icon="fa-truck" attrs="{'invisible':[('incoming_picking_count','=', 0)]}" groups="stock.group_stock_user">
 							<field name="incoming_picking_count" widget="statinfo" string="Receipt" help="Incoming Shipments"/>
 						</button>
@@ -61,13 +65,13 @@
 							<field name="partner_ref" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}"/>
 							<field name="currency_id" invisible="1" force_save="1" />
 							<field name="id" invisible="1" />
+							<field name="remaining_qty" invisible="1" />
 							<field name="is_shipped" invisible="1"/>
 
 						</group>
 						<group>
 							<field name="date_order" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" />
-							<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('aqua_po_state','in',('confirmed','cancelled')),('is_branch_readonly','=',True)]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
-							<field name="is_branch_readonly" invisible="1"/>
+							<field name="warehouse_id" required="1" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
 			                <field name="priority" attrs="{'readonly': [('aqua_po_state','in',('confirmed','cancelled'))]}"/>
 						</group>
 					</group>
@@ -122,6 +126,19 @@
 								</group>
 							</group>
 							<div class="oe_clear" />
+						</page>
+						<page string="Attchaments">
+							<field name="po_attachment_ids" readonly="1" attrs="{'invisible': [('po_attachment_ids','=',[])]}">
+							<tree>
+								<field name="po_attachment" filename="po_file_name" widget="file"/>
+	        					<field name="po_file_name" invisible="1"/>
+								<field name="document_number"/>
+								<field name="document_date"/>
+							</tree>
+							<form>
+								
+							</form>
+							</field>
 						</page>
 						<page string="Other Information" name="purchase_delivery_invoice" invisible="1">
 							<group>

@@ -50,11 +50,8 @@ class ShipmentReceiveWiz(models.TransientModel):
             for line in rec.wiz_line_ids.filtered(lambda i: i.quantity > 0):
                 if not line.expiry_date:
                     raise ValidationError(_('Please update expiry date.'))
-                if not line.batch:
-                    raise ValidationError(_('Please update batch.'))
-                if line.quantity>line.move_id.pending_qty:
+                if line.quantity > line.move_id.pending_qty:
                     raise ValidationError(_('Qty cannot be greater than pending qty.'))
-                lot_pool.check_duplicate_batch_number(line.product_id.id, line.batch.upper())
                 for picking_move in picking.move_lines:
                     if picking_move.product_id == line.product_id and picking_move.purchase_line_id == line.purchase_line_id:
                         old_move_line = picking_move.move_line_ids[0]
@@ -63,7 +60,6 @@ class ShipmentReceiveWiz(models.TransientModel):
                 move_line = old_move_line.copy()
                 move_line.product_uom_qty = line.quantity
                 lot_name = rec.create_barcode(line, move_line)
-                print("=========================purchase_line_id",line.purchase_line_id.company_id,line.purchase_line_id.company_id.id)
                 lot_id = lot_pool.create({
                     'name': lot_name,
                     'product_id': move_line.product_id.id,
@@ -75,8 +71,7 @@ class ShipmentReceiveWiz(models.TransientModel):
                     'warehouse_id':rec.purchase_id.warehouse_id.id or False,
                     'taxes_ids': [(6,0,taxes or [])],
                     'expiry_date':line.expiry_date,
-                    # 'company_id':line.purchase_line_id.company_id or line.purchase_line_id.company_id.id or False
-                    'company_id':1
+                    'company_id':line.purchase_line_id.company_id or line.purchase_line_id.company_id.id or False
                 })
                 move_line.lot_id = lot_id.id
                 move_line.qty_done = move_line.product_uom_qty
@@ -88,7 +83,6 @@ class ShipmentReceiveWiz(models.TransientModel):
                     {'pick_ids': [(4, p.id) for p in picking]})
                 back_order.process()
                 next_picking = self.env['stock.picking'].search([('backorder_id','=',picking.id)],limit=1)
-                print("======11111111========",next_picking,picking)
                 if next_picking:
                     next_picking.is_aqua_picking = True
             else:
@@ -142,7 +136,10 @@ class ShipmentReceiveWiz(models.TransientModel):
         for rec in self:
             new_defaultcode = ''.join(char for char in line.product_id.default_code if char.isalnum())
             defaultcode = new_defaultcode.lstrip('0')
-            barcode_prefix = line.batch.upper() + str(defaultcode[:3]).upper() 
+            if line.batch:
+                barcode_prefix = line.batch.upper() + str(defaultcode[:3]).upper()
+            else:
+                barcode_prefix = str(defaultcode[:3]).upper()
             lot_name = barcode_prefix + str(move_line.id)
             lot_name =  ''.join(c for c in lot_name if c.isalnum()).upper()
             return lot_name

@@ -8,14 +8,6 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
     _description = "Aqua Purchase"
 
-    @api.model
-    def _get_warehouse(self):
-        loged_user = self.env.user
-        current_branch_id = False
-        if loged_user and loged_user.current_branch_id:
-            current_branch_id = loged_user.current_branch_id.id
-        return current_branch_id
-
     def _get_warehouse_domain(self):
         loged_user = self.env.user
         current_branch_ids = []
@@ -23,19 +15,71 @@ class PurchaseOrder(models.Model):
             current_branch_ids = loged_user.branch_ids.ids
         return [('id', 'in', current_branch_ids)]
     
-    @api.model
-    def _get_is_branch_readonly(self):
-        loged_user = self.env.user
-        is_branch_readonly = False
-        if loged_user and loged_user.current_branch_id:
-            is_branch_readonly = True
-        return is_branch_readonly
-
-    warehouse_id = fields.Many2one('stock.warehouse',string="Branch",domain=_get_warehouse_domain, default=_get_warehouse)
-    is_branch_readonly = fields.Boolean(string="Branch Visibility",default=_get_is_branch_readonly)
+    warehouse_id = fields.Many2one('stock.warehouse',string="Branch",domain=_get_warehouse_domain)
     aqua_po_state = fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('cancelled','Cancelled')],default='draft',string="Aqua PO state")
     is_aqua_po = fields.Boolean(string="Is aqua purchase")
     latest_picking_ref = fields.Char(compute='compute_picking_ref', store=True, string="Shipment Ref")
+    po_bills_count = fields.Integer(string="Bills Count",compute='compute_po_bills_count')
+    remaining_qty = fields.Float(string="Remaining Qty",compute='compute_remaining_qty',store=True)
+    po_attachment_ids = fields.One2many('po.attachment.lines','purchase_id',string="Attachments")
+    
+    
+    @api.depends('order_line','order_line.product_qty','order_line.qty_received')
+    def compute_remaining_qty(self):
+        for rec in self:
+            remaining_qty = 0
+            for line in rec.order_line:
+                remaining_qty += line.product_qty - line.qty_received
+            rec.remaining_qty = remaining_qty
+
+    def aqua_action_receive_shipment(self):
+        for rec in self:
+            context = self._context.copy()
+            picking_id = None
+            if rec.picking_ids and rec.picking_ids.filtered(lambda i: i.state == 'assigned'):
+                picking_id = rec.picking_ids[0].id
+    
+            context.update({
+                'active_model': 'stock.picking',
+                'active_id': rec.picking_ids and picking_id,
+                'active_ids': [picking_id]
+            })
+            return_vals = {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'res_model': 'stock.picking.validate',
+                'view_id':self.env.ref('aqua_purchase_customization.aqua_stock_picking_validate').id,
+                'context': context
+            }
+            return return_vals
+
+    
+    def compute_po_bills_count(self):
+        for rec in self:
+            account_move_ids = self.env['account.move'].search([('purchase_id','=',rec.id),('is_aqua_bill','=',True)])
+            rec.po_bills_count = account_move_ids and len(account_move_ids.ids) or 0
+            
+
+    def action_view_po_invoice(self):
+        for rec in self:
+            account_move_ids = self.env['account.move'].search([('purchase_id','=',rec.id),('is_aqua_bill','=',True)])
+            if account_move_ids:
+                form_view_id = self.env.ref('aqua_purchase_customization.aqua_po_account_move_form_view').id or False
+                tree_view_id = self.env.ref('aqua_purchase_customization.aqua_po_account_move_tree_view').id or False
+                return {
+                    'name': _('Vendor Bills'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'account.move',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', 'in', account_move_ids.ids or [])],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
+            
 
     @api.depends('picking_ids')
     def compute_picking_ref(self):
@@ -129,4 +173,13 @@ class PurchaseOrderLine(models.Model):
             if rec.price_unit < 0:
                 raise ValidationError(_("Unit price must be positive for the product '%s'"% str(rec.product_id.name)))
                 
-                
+class PoAttchmentLines(models.Model):
+  
+    _name = "po.attachment.lines"
+    _description = "Attachments"
+    
+    purchase_id = fields.Many2one('purchase.order',string="Purchase")
+    po_attachment = fields.Binary(string='Attachment', attachment=True)
+    po_file_name = fields.Char(string="File name")
+    document_number = fields.Char(string="Document Number")
+    document_date = fields.Date(string='Document Date')
