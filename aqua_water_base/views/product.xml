@@ -39,7 +39,7 @@
 						</div>
 						<group>
 							<group>
-								<field name="default_code" />
+								<field name="default_code" required="1"/>
 								<field name="supplier_taxes_id" string="Taxes" widget="many2many_tags" force_save="1" />
 								<field name="standard_price" string="Cost" widget='monetary' options="{'currency_field': 'cost_currency_id'}" />
 								<field name="barcode"/>
