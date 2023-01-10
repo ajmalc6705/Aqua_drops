@@ -20,6 +20,7 @@ class StockProductionLot(models.Model):
     price_total = fields.Float(string="Total Amount",compute='_compute_amount',store=True)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.user.company_id.currency_id)
     available_qty = fields.Float(compute='compute_available_qty', store=True)
+    qty = fields.Float(string="Qty")
 
     @api.depends('quant_ids', 'quant_ids.location_id', 'quant_ids.quantity', 'location_id')
     def compute_available_qty(self):
@@ -65,8 +66,8 @@ class StockProductionLot(models.Model):
                 raise ValidationError(_("There is already a Barcode generated against %s with Batch Number as %s.!"
                                       %(similar_item[0].product_id.name,similar_item[0].batch_number and similar_item[0].batch_number.upper())))
                                
-    def check_duplicate_batch_number(self, product_id, batch_number):
-        for lot in self.search([('product_id','=', product_id), ('batch_number','!=', False)]):
+    def check_duplicate_batch_number(self, product_id, batch_number,warehouse_id):
+        for lot in self.search([('product_id','=', product_id), ('batch_number','!=', False),('warehouse_id','=',warehouse_id)]):
             skip = False
             if (not skip) and lot.batch_number and lot.batch_number.upper() == str(batch_number).upper():
                 raise ValidationError(_("There is already a Barcode generated against %s with Batch Number as %s.!"
