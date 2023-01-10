@@ -19,7 +19,7 @@ class HrEmployeeDocument(models.Model):
             if i.expiry_date:
                 if i.notification_type == 'single':
                     exp_date = fields.Date.from_string(i.expiry_date)
-                    print('exp_date :',exp_date)
+                    # print('exp_date :',exp_date)
                     # if date_now == exp_date:
                     if date_now == i.expiry_date:
 
@@ -35,7 +35,7 @@ class HrEmployeeDocument(models.Model):
                 elif i.notification_type == 'multi':
                     exp_date = fields.Date.from_string(i.expiry_date) - timedelta(days=i.before_days)
                     if date_now == exp_date or date_now == i.expiry_date: #on Expire date and few days(As it set) before expire date
-                        print('mail send started before few')
+                        # print('mail send started before few')
                         mail_content = "  Hello  " + i.employee_ref.name + ",<br>Your Document " + i.name + \
                                        " is going to expire on " + str(i.expiry_date) + \
                                        ". Please renew it before expiry date"
@@ -51,7 +51,7 @@ class HrEmployeeDocument(models.Model):
                     # if date_now >= exp_date and date_now == i.expiry_date:
                     if date_now >= exp_date or date_now == i.expiry_date:
 
-                        print('Everyday till START sending')
+                        # print('Everyday till START sending')
 
                         mail_content = "  Hello  " + i.employee_ref.name + ",<br>Your Document " + i.name + \
                                        " is going to expire on " + str(i.expiry_date) + \
@@ -68,7 +68,7 @@ class HrEmployeeDocument(models.Model):
                     # if date_now == exp_date and date_now == i.expiry_date:
                     if date_now <= exp_date or date_now == i.expiry_date:
 
-                        print('Every day after START sending')
+                        # print('Every day after START sending')
                         mail_content = "  Hello  " + i.employee_ref.name + ",<br>Your Document " + i.name + \
                                        " is expired on " + str(i.expiry_date) + \
                                        ". Please renew it "

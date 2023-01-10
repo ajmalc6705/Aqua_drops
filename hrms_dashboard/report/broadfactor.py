@@ -18,7 +18,7 @@ class EmployeeBroadFactor(models.Model):
     def init(self):
         tools.drop_view_if_exists(self._cr, 'hr_employee_broad_factor')
         date_today = date.today()
-        print("date_today", date_today)
+        # print("date_today", date_today)
         self._cr.execute("""
             create or replace view hr_employee_broad_factor as (
                 select

@@ -66,8 +66,8 @@ class HrLoanAcc(models.Model):
                     'credit': amount > 0.0 and amount or 0.0,
                     'loan_id': loan.id,
                 }
-                print("22222",debit_vals)
-                print("8888",credit_vals)
+                # print("22222",debit_vals)
+                # print("8888",credit_vals)
                 vals = {
                     'name': 'Loan For' + ' ' + loan_name,
                     'narration': loan_name,
@@ -77,7 +77,7 @@ class HrLoanAcc(models.Model):
                     'line_ids': [(0, 0, debit_vals), (0, 0, credit_vals)]
                 }
                 move = self.env['account.move'].create(vals)
-                print("0000",move)
+                # print("0000",move)
                 move.post()
             self.write({'state': 'approve'})
         return True
