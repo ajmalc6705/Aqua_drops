@@ -651,6 +651,10 @@
         parent="account.menu_finance"
         groups="account.group_account_readonly,account.group_account_invoice"
         sequence="34" />
+
+        <record model="ir.ui.menu" id="account.menu_finance">
+            <field name="name">Accounting</field>
+        </record>
         <!-- Account Financial Report Menuitems -->
         <menuitem id="account_reports_partners_reports_menu" name="Partner Reports"  parent="account.account_account_menu"  sequence="2"/>
         <!-- parent="account.menu_finance_reports" -->
