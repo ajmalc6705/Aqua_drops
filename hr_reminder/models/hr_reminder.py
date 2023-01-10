@@ -27,11 +27,11 @@ class HrPopupReminder(models.Model):
                                  default=lambda self: self.env.user.company_id)
 
     def reminder_scheduler(self):
-        print("hlooo")
+        # print("hlooo")
         now = fields.Datetime.from_string(fields.Datetime.now())
-        print("8888",now)
+        # print("8888",now)
         today = fields.Date.today()
-        print("2222")
+        # print("2222")
         obj = self.env['hr.reminder'].search([])
         for i in obj:
             if i.search_by != "today":

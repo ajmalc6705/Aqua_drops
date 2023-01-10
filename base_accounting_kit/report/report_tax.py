@@ -55,7 +55,7 @@ class ReportTax(models.AbstractModel):
         return sql
 
     def _compute_from_amls(self, options, taxes):
-        print("hhhh")
+        # print("hhhh")
         # compute the tax amount
         sql = self._sql_from_amls_one()
         tables, where_clause, where_params = self.env[
@@ -63,7 +63,7 @@ class ReportTax(models.AbstractModel):
         query = sql % (tables, where_clause)
         self.env.cr.execute(query, where_params)
         results = self.env.cr.fetchall()
-        print("3333",results)
+        # print("3333",results)
         for result in results:
             if result[0] in taxes:
                 taxes[result[0]]['tax'] = abs(result[1])

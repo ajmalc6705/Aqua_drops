@@ -10,7 +10,46 @@ class StockPicking(models.Model):
     is_aqua_sale_picking = fields.Boolean(string="Is aqua sale picking")
     aqua_sale_id = fields.Many2one('sale.order', string="Sale")
 
+    def action_view_delivery_invoice(self):
+        for rec in self:
+            if rec.invoice_id:
+                form_view_id = self.env.ref('aqua_sale_customization.aqua_sale_account_move_form_view').id or False
+                tree_view_id = self.env.ref('aqua_sale_customization.aqua_sale_account_move_tree_view').id or False
+                return {
+                    'name': _('Sale Bills'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'account.move',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', '=',rec.invoice_id.id)],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
+
+    def action_view_sale(self):
+        for rec in self:
+            if rec.aqua_sale_id:
+                form_view_id = self.env.ref('aqua_sale_customization.aqua_water_sale_order_form_view').id or False
+                tree_view_id = self.env.ref('aqua_sale_customization.aqua_water_sale_order_tree_view').id or False
+                return {
+                    'name': _('Sale'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'sale.order',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', '=',rec.aqua_sale_id.id)],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
+
     def button_validate(self):
+        for rec in self:
+            if rec.is_aqua_sale_picking and rec.warehouse_id:
+                for line in self.move_line_ids:
+                    if line.lot_id and line.lot_id.warehouse_id and line.lot_id.warehouse_id.id != rec.warehouse_id.id:
+                        raise ValidationError(_("Barcode - %s does not belongs to this Branch."%line.lot_id.name))
         res = super(StockPicking, self).button_validate()
         for rec in self:
             if rec.is_aqua_sale_picking:

@@ -8,7 +8,7 @@ class Reminders(http.Controller):
 
     @http.route('/hr_reminder/all_reminder', type='json', auth="public")
     def all_reminder(self):
-        print("33")
+        # print("33")
         reminder = []
         for i in request.env['hr.reminder'].search([]):
             if i.reminder_active:
@@ -17,19 +17,19 @@ class Reminders(http.Controller):
                     'name':i.name,
                 })
 
-            print('reminder',reminder)
+            # print('reminder',reminder)
         return reminder
 
 
 
     @http.route('/hr_reminder/reminder_active', type='json', auth="public")
     def reminder_active(self, **kwargs):
-        print("active",kwargs)
+        # print("active",kwargs)
         reminder_value = kwargs.get('reminder_name')
-        print("11",reminder_value)
+        # print("11",reminder_value)
         value = []
         i = request.env['hr.reminder'].search([])
-        print("iiiii",i)
+        # print("iiiii",i)
 
         for i in request.env['hr.reminder'].sudo().search([('name', '=', reminder_value)]):
             value.append(i.model_name.model)
@@ -42,5 +42,5 @@ class Reminders(http.Controller):
             value.append(i.id)
             value.append(fields.Date.today())
 
-        print("222",value)
+        # print("222",value)
         return value

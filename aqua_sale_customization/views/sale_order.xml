@@ -35,13 +35,18 @@
 						<field name="state" widget="statusbar" statusbar_visible="draft,sale" />
 					</header>
 					<sheet>
-						                    <div class="oe_button_box" name="button_box">
+						<div class="oe_button_box" name="button_box">
 						<button type="object"
                         name="action_view_delivery"
                         class="oe_stat_button"
                         icon="fa-truck"
                         attrs="{'invisible': [('delivery_count', '=', 0)]}" groups="stock.group_stock_user">
                         <field name="delivery_count" widget="statinfo" string="Delivery"/>
+						</button>
+						<button type="object" name="action_view_sale_invoice"
+								class="oe_stat_button" icon="fa-pencil-square-o"
+								attrs="{'invisible':[('sale_bills_count', '=',0)]}">
+							<field name="sale_bills_count" widget="statinfo" string="Bills" readonly="1"/>
                     </button>
                     </div>
 
@@ -53,9 +58,8 @@
 						<group>
 							<group>
 								<field name="aqua_sale_type" required="1" attrs="{'readonly': [('state', 'not in', ['draft'])]}" />
-								<field name="warehouse_id" required="1" attrs="{'readonly': ['|',('is_branch_readonly','=',True),('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
-								<field name="partner_id" options="{'no_open':True,'no_create': True}" domain="[('is_aqua_customer','=',True),('warehouse_id','=',warehouse_id)]" attrs="{'readonly': [('state', 'not in', ['draft'])]}" />
-								<field name="is_branch_readonly" invisible="1" />
+								<field name="warehouse_id" required="1" attrs="{'readonly': [('state', 'not in', ['draft'])]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
+								<field name="partner_id" options="{'no_open':True,'no_create': True}" domain="[('is_aqua_customer','=',True)]" attrs="{'readonly': [('state', 'not in', ['draft'])]}" />
 								<field name="is_aqua_sale" invisible="1" />
 							</group>
 							<group name="order_details">
@@ -90,7 +94,7 @@
 										<field name="qty_to_invoice" invisible="1" />
 										<field name="product_uom_readonly" invisible="1" />
 										<field name="product_uom" force_save="1" string="UoM" invisible="1" />
-										<field name="price_unit" required="1" />
+										<field name="price_unit" required="1" force_save="1"/>
 										<field name="tax_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
 										<field name="discount" string="Disc.%" invisible="1" />
 										<field name="price_subtotal" widget="monetary" readonly="1" />

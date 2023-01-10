@@ -5,38 +5,46 @@ from odoo.exceptions import ValidationError
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     
-    @api.model
-    def _get_warehouse(self):
-        loged_user = self.env.user
-        current_branch_id = False
-        if loged_user and loged_user.current_branch_id:
-            current_branch_id = loged_user.current_branch_id.id
-        return current_branch_id
-
     def _get_warehouse_domain(self):
         loged_user = self.env.user
         current_branch_ids = []
         if loged_user and loged_user.branch_ids:
             current_branch_ids = loged_user.branch_ids.ids
         return [('id', 'in', current_branch_ids)]
-    
-    @api.model
-    def _get_is_branch_readonly(self):
-        loged_user = self.env.user
-        is_branch_readonly = False
-        if loged_user and loged_user.current_branch_id:
-            is_branch_readonly = True
-        return is_branch_readonly
 
-    warehouse_id = fields.Many2one('stock.warehouse',string="Branch",domain=_get_warehouse_domain, default=_get_warehouse)
-    is_branch_readonly = fields.Boolean(string="Branch Visibility",default=_get_is_branch_readonly)
-    aqua_sale_type = fields.Selection([('internal','Internal'),('coupon','Coupon')],default='internal',string="Sale Type")
+    warehouse_id = fields.Many2one('stock.warehouse',string="Branch",domain=_get_warehouse_domain)
+    aqua_sale_type = fields.Selection([('internal','Sales Invoice'),('coupon','Coupon')],default='internal',string="Sale Type")
     is_aqua_sale = fields.Boolean(string="Is aqua sale")
+    sale_bills_count = fields.Integer(string="Bills Count",compute='compute_sale_bills_count')
+
+    def compute_sale_bills_count(self):
+        for rec in self:
+            account_move_ids = self.env['account.move'].search([('aqua_sale_id','=',rec.id),('is_aqua_sale_bill','=',True)])
+            rec.sale_bills_count = account_move_ids and len(account_move_ids.ids) or 0
+
+    def action_view_sale_invoice(self):
+        for rec in self:
+            account_move_ids = self.env['account.move'].search([('aqua_sale_id','=',rec.id),('is_aqua_sale_bill','=',True)])
+            if account_move_ids:
+                form_view_id = self.env.ref('aqua_sale_customization.aqua_sale_account_move_form_view').id or False
+                tree_view_id = self.env.ref('aqua_sale_customization.aqua_sale_account_move_tree_view').id or False
+                return {
+                    'name': _('Bills'),
+                    'view_type': 'form',
+                    'view_mode': 'tree,form',
+                    'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+                    'res_model': 'account.move',
+                    'type': 'ir.actions.act_window',
+                    'domain': [('id', 'in', account_move_ids.ids or [])],
+                    'target': 'current',
+                    'context':{'create': False,'edit': False,'delete':False}
+                }
 
     @api.onchange('company_id')
     def _onchange_company_id(self):
         if self.is_aqua_sale:
-            self.warehouse_id = self.env.user.current_branch_id and self.env.user.current_branch_id.id or False
+            self.warehouse_id = False
+            # self.warehouse_id = self.warehouse_id and self.warehouse_id.id or False
         else:
             return super(SaleOrder, self)._onchange_company_id()
 
@@ -113,7 +121,10 @@ class SaleOrder(models.Model):
             if rec.aqua_sale_type == 'coupon':
                 for line in rec.order_line:
                     for coupon in line.coupon_ids:
-                        coupon.status = "used"
+                        if coupon.status == 'used':
+                            raise ValidationError(_("Coupon %s does not available"%(str(coupon.sl_no))))
+                        else:
+                            coupon.status = "used"
             rec.state = 'sale'
 
     def _get_action_view_picking(self, pickings):
@@ -146,19 +157,24 @@ class SaleOrderLine(models.Model):
     
     coupon_ids = fields.Many2many('aqua.customer.coupon.lines','sale_order_line_coupon_line_rel','sale_line_id','coupon_line_id',string="Coupon")
     
-    @api.onchange('coupon_ids')
+    @api.onchange('coupon_ids','product_id')
     def onchange_coupon_ids(self):
         for rec in self:
-            product_uom_qty = 0
-            price_unit = 0
-            count = 0
-            for line in rec.coupon_ids:
-                count += 1
-                price_unit += line.coupon_id and line.coupon_id.coupon_amount or 0
-            if count>0:
-                rec.price_unit = (price_unit/count) or 0
-            product_uom_qty = rec.coupon_ids and len(rec.coupon_ids.ids) or 0
-            rec.product_uom_qty = product_uom_qty
+            if rec.order_id: 
+                if rec.order_id.aqua_sale_type == 'coupon':
+                    product_uom_qty = 0
+                    price_unit = 0
+                    count = 0
+                    for line in rec.coupon_ids:
+                        count += 1
+                        price_unit += line.coupon_id and line.coupon_id.coupon_amount or 0
+                    if count>0:
+                        rec.price_unit = (price_unit/count) or 0
+                    product_uom_qty = rec.coupon_ids and len(rec.coupon_ids.ids) or 0
+                    rec.product_uom_qty = product_uom_qty
+                else:
+                    rec.price_unit = rec.product_id and rec.product_id.lst_price or 0
+                    
             
     @api.constrains('price_unit')
     def check_price_unit(self):
