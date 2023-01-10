@@ -28,11 +28,24 @@
 			<field name="arch" type="xml">
 				<form string="shipment"  delete="0">
 					<header>
-                    	<button name="button_validate" attrs="{'invisible': [('state', 'in', ('draft','waiting','done'))]}" string="Validate" type="object" class="oe_highlight"/>
-						<!--<button name="receive_shipment_action" type="object" string="Receive Shipment"/>-->
+                    	<button name="aqua_action_receive_shipment" attrs="{'invisible': [('state', 'in', ('draft','waiting','done'))]}" string="Receive Shipment" type="object" class="oe_highlight"/>
+<!--                    	<button name="button_validate" attrs="{'invisible': [('state', 'in', ('draft','waiting','done'))]}" string="Validate" type="object" class="oe_highlight"/>
+-->						<!--<button name="receive_shipment_action" type="object" string="Receive Shipment"/>-->
 						<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done" />
 					</header>
 					<sheet>
+					<div class="oe_button_box" name="button_box">
+						<button type="object" name="action_view_po"
+								class="oe_stat_button" icon="fa-pencil-square-o"
+								attrs="{'invisible':[('purchase_id', '=',False)]}">
+							<field name="purchase_id" widget="statinfo" readonly="1"/>
+						</button>
+						<button type="object" name="action_view_shipment_invoice"
+								class="oe_stat_button" icon="fa-pencil-square-o"
+								attrs="{'invisible':[('invoice_id', '=',False)]}">
+							<field name="invoice_id" readonly="1" widget="statinfo" string="Vendor Bills"/>
+						</button>
+					</div>
 						<div class="oe_title">
 							<h1>
 								<field name="name" attrs="{'invisible': [('name','=','/')]}" />
@@ -52,6 +65,8 @@
 								<field name="date_deadline"  />
 								<field name="date_done" string="Effective Date" attrs="{'invisible': [('state', '!=', 'done')]}" />
 								<field name="origin" placeholder="e.g. PO0032" />
+		                    	<field name="po_attachment" filename="po_file_name" attrs="{'invisible': [('po_attachment', '=',False)]}"/>
+	        					<field name="po_file_name" invisible="1"/>
 							</group>
 						</group>
 						<notebook>

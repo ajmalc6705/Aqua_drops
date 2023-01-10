@@ -31,6 +31,9 @@
                             	<field name="users_ids" widget="many2many_tags" options='{"no_open": True, "no_create": True}'/>
                             	<field name="phone" />
                                 <field name="email" widget="email"/>
+                                <field name="last_used_nbr" attrs="{'readonly': [('customer_coupon_ids', '!=', [])]}"/>
+                                <field name="sequence_id" invisible="1" readonly="1" options='{"no_open": True, "no_create": True}'/>
+                                <field name="customer_coupon_ids" invisible="1"/>
                             </group>
                             
                         </group>

@@ -50,12 +50,12 @@
                             </div>
                           	</group>
                        	<group>
-	                      	<field name="warehouse_id" required="1" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" attrs="{'readonly':[('is_branch_readonly','=',True)]}"/>
+	                      	<field name="warehouse_id" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
                             <field name="phone" widget="phone" />
                             <field name="email" widget="email" context="{'gravatar_image': True}" />
                             <field name="vat" placeholder="e.g. BE0477472701" string="GSTIN" />
-							<field name="is_branch_readonly" invisible="1"/>
-							<field name="purchase_due_amount" attrs="{'invisible':[('purchase_bill_count','=',0)]}"/>
+							<field name="purchase_due_amount" style="font-weight: bold;"
+								   attrs="{'invisible':[('purchase_bill_count','=',0)]}"/>
 							<field name="purchase_bill_count" invisible="1"/>
 						</group>
                   		</group>

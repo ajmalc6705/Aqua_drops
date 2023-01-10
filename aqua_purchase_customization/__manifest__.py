@@ -28,6 +28,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'wizard/receive_shipment_wiz.xml',
+        'wizard/stock_picking_validate_view.xml',
         'views/purchase_view.xml',
         'views/stock_picking.xml',
         'views/stock_move.xml',
