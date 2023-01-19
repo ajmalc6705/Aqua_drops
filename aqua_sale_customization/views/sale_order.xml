@@ -32,6 +32,7 @@
 							attrs="{'invisible': [('state', 'not in', ['draft'])]}" />
 						<button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|', ('state', 'not in', ['draft']), ('id', '=', False)]}" data-hotkey="z" />
 						<button name="action_draft" states="cancel" type="object" string="Set to Quotation" data-hotkey="w" />
+						<button name="action_quotation_send" string="Send by Email" type="object" states="sent,sale" data-hotkey="g"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,sale" />
 					</header>
 					<sheet>
@@ -65,6 +66,7 @@
 							<group name="order_details">
 								<field name="date_order" attrs="{'readonly': [('state', 'not in', ['draft'])]}" required="1" />
 								<field name="currency_id" invisible="1" />
+								<field name="pricelist_id" invisible="1" force_save="1"/>
 								<field name="tax_country_id" invisible="1" />
 								<field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state', 'not in', ['draft'])]}" />
 							</group>
@@ -93,7 +95,9 @@
 										<field name="qty_invoiced" readonly="1" invisible="1" />
 										<field name="qty_to_invoice" invisible="1" />
 										<field name="product_uom_readonly" invisible="1" />
-										<field name="product_uom" force_save="1" string="UoM" invisible="1" />
+										<field name="product_uom" force_save="1" string="UoM" attrs="{
+                                            'readonly': [('product_uom_readonly', '=', True)],
+                                            'required': [('display_type', '=', False)]}"/>
 										<field name="price_unit" required="1" force_save="1"/>
 										<field name="tax_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True,'no_open': True}" />
 										<field name="discount" string="Disc.%" invisible="1" />

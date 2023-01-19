@@ -113,11 +113,16 @@ class StockPicking(models.Model):
         date = fields.Date.today()
         res = {}
         if line.quantity_done>0:
+            if line.sale_line_id.product_uom.id != line.product_id.uom_id.id:
+                quantity = line.quantity_done * (
+                            line.sale_line_id.product_uom.factor / line.product_id.uom_id.factor)
+            else:
+                quantity = line.quantity_done
             res = {
-                'name': '%s: %s' % (self.aqua_sale_id.name, picking_id.name),
+                'name': '%s' % (line.product_id and line.product_id.name_get()[0][1] or ''),
                 'product_id': line.product_id.id,
                 'product_uom_id': line.sale_line_id.product_uom.id,
-                'quantity': line.quantity_done,
+                'quantity': quantity,
                 'tax_ids': [(6, 0, line.sale_line_id.tax_id.ids)],
                 'price_unit': self.aqua_sale_id.currency_id._convert(line.sale_line_id.price_unit, aml_currency, self.aqua_sale_id.company_id, date, round=False),
                 'account_id': account_id.id,

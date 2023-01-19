@@ -16,7 +16,8 @@ class PurchaseOrder(models.Model):
         return [('id', 'in', current_branch_ids)]
     
     warehouse_id = fields.Many2one('stock.warehouse',string="Branch",domain=_get_warehouse_domain)
-    aqua_po_state = fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('cancelled','Cancelled')],default='draft',string="Aqua PO state")
+    aqua_po_state = fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('cancelled','Cancelled')],
+                                     default='draft', string="Status")
     is_aqua_po = fields.Boolean(string="Is aqua purchase")
     latest_picking_ref = fields.Char(compute='compute_picking_ref', store=True, string="Shipment Ref")
     po_bills_count = fields.Integer(string="Bills Count",compute='compute_po_bills_count')

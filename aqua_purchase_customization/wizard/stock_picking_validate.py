@@ -106,6 +106,8 @@ class StockPickingValidate(models.TransientModel):
                         'purchase_line_id': line.purchase_line_id.id,
                         'qty': line.purchase_line_id.product_qty,
                         'batch_number': line.batch_number,
+                        'warehouse_id': rec.purchase_id.warehouse_id.id or False,
+                        'location_id': move_line.location_dest_id.id,
                         'expiry_date': line.expiry_date,
                         'taxes_ids': [(6, 0, line.purchase_line_id.taxes_id and line.purchase_line_id.taxes_id.ids or [])],
                         'company_id': line.purchase_line_id.order_id.company_id.id,
@@ -166,7 +168,7 @@ class StockPickingValidate(models.TransientModel):
 
     def aqua_action_create_picking_invoice(self):
         for rec in self:
-            sequence = 0
+            sequence = 1
             invoice_vals = self._prepare_invoice()
             for line in rec.wiz_line_ids.filtered(lambda i: i.receiving_qty > 0):
                 line_vals = self._prepare_account_move_line(line)
@@ -184,11 +186,15 @@ class StockPickingValidate(models.TransientModel):
         self.ensure_one()
         aml_currency = self.purchase_id and self.purchase_id.currency_id
         date = self.bill_date or fields.Date.today()
+        if line.purchase_line_id.product_uom.id != line.product_id.uom_id.id:
+            quantity = line.move_id.quantity_done * (line.purchase_line_id.product_uom.factor / line.product_id.uom_id.factor)
+        else:
+            quantity = line.move_id.quantity_done
         res = {
-            'name': '%s: %s' % (self.purchase_id.name, self.picking_id.name),
+            'name': '%s' % (line.product_id and line.product_id.name_get()[0][1] or ''),
             'product_id': line.product_id.id,
-            'product_uom_id': line.product_uom.id,
-            'quantity': line.move_id.quantity_done,
+            'product_uom_id': line.purchase_line_id.product_uom.id,
+            'quantity': quantity,
             'tax_ids': [(6, 0, line.purchase_line_id.taxes_id.ids)],
             'price_unit': self.purchase_id.currency_id._convert(line.purchase_line_id.price_unit, aml_currency, self.purchase_id.company_id, date, round=False),
             'purchase_line_id': line.purchase_line_id.id,
