@@ -173,7 +173,22 @@ class SaleOrderLine(models.Model):
                     product_uom_qty = rec.coupon_ids and len(rec.coupon_ids.ids) or 0
                     rec.product_uom_qty = product_uom_qty
                 else:
-                    rec.price_unit = rec.product_id and rec.product_id.lst_price or 0
+                    product = self.product_id.with_context(
+                        partner=self.order_id.partner_id,
+                        quantity=self.product_uom_qty or 1.0,
+                        date=self.order_id.date_order,
+                        pricelist=self.order_id.pricelist_id and self.order_id.pricelist_id.id or False,
+                        uom=self.product_uom.id
+                    )
+                    rec.price_unit = product._get_tax_included_unit_price(
+                self.company_id or self.order_id.company_id,
+                self.order_id.currency_id,
+                self.order_id.date_order,
+                'sale',
+                fiscal_position=self.order_id.fiscal_position_id,
+                product_price_unit=self._get_display_price(product),
+                product_currency=self.order_id.currency_id
+            )
                     
             
     @api.constrains('price_unit')

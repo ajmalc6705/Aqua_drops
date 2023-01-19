@@ -29,6 +29,7 @@
         'security/ir.model.access.csv',
         'data/sequence.xml',
         'wizard/payment_wizard_view.xml',
+        'reports/report_account_move.xml',
         'views/stock_warehouse.xml',
         'views/customer_coupon.xml',
         'views/res_users.xml',

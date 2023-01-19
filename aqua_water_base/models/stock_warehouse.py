@@ -6,7 +6,7 @@ class Warehouse(models.Model):
     _inherit = "stock.warehouse"
     _description = "Branch"
 
-    is_aqua_branch = fields.Boolean(string="Is Aqua Branch")
+    is_aqua_branch = fields.Boolean(string="Is Aqua Branch", default=True)
     phone = fields.Char()
     email = fields.Char()
     street = fields.Char()
