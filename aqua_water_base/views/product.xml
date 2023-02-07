@@ -31,6 +31,7 @@
 								<field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}" />
 							</button>
 						</div>
+						<field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}" modifiers="{}"/>
 						<div class="oe_title">
 							<label class="oe_edit_only" for="name" string="Product Name" />
 							<h1>
